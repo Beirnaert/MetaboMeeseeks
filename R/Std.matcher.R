@@ -30,8 +30,10 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
         if( ! "matrix" %in% class(Standards.ratios) ){
             stop("Standards.ratios is not a matrix. Should be of format (Standard X Intensitie ratio)")
         }
-        if(!"xcmsSet" %in% class(Data) & ncol(Data) != 3){
-            stop("Data is not an xcmsSet object, nor is it a matrix with 3 columns (mz, RT, Intensity). One of these is necassary for the ratio check")
+        if(!"xcmsSet" %in% class(Data) ){
+            if(ncol(Data) != 3){
+                stop("Data is not an xcmsSet object, nor is it a matrix with 3 columns (mz, RT, Intensity). One of these is necassary for the ratio check")
+            }
         }
         if( !all( dim(Standards.ratios) ==  dim(Standards.mz)) ) {
             stop("The dimensions of Standards.ratios is not equal to those of Standards.mz")
@@ -171,8 +173,8 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
                 
                 samples.in.feature = list()
                 for(smp in 1:length(present.index)){
-                    sample.peakdata = xcmsData@peaks[xcmsData@groupidx[[present.index[smp] ]], ]
-                    samples.in.feature[[smp]] = sample.peakdata[!is.na(sample.peakdata[,8]),11]
+                    sample.peakdata = data.frame(xcmsData@peaks[xcmsData@groupidx[[present.index[smp] ]], ])
+                    samples.in.feature[[smp]] = sample.peakdata$sample[!is.na(sample.peakdata$intb)]
                 }
                 
                 possible.samples = Reduce(intersect, samples.in.feature)
@@ -195,8 +197,8 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
                     
                     samples.in.feature = list()
                     for(smp in 1:length(present.index)){
-                        sample.peakdata = xcmsData@peaks[xcmsData@groupidx[[present.index[smp] ]], ]
-                        samples.in.feature[[smp]] = sample.peakdata[!is.na(sample.peakdata[,8]),11]
+                        sample.peakdata = data.frame(xcmsData@peaks[xcmsData@groupidx[[present.index[smp] ]], ])
+                        samples.in.feature[[smp]] = sample.peakdata$sample[!is.na(sample.peakdata$intb)]
                     }
                     
                 }
@@ -205,22 +207,22 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
                 
                 if(length(possible.samples)!=0){
                     
-                    possible.samples.peakdata = xcmsData@peaks[xcmsData@groupidx[[present.index[1] ]], ]
-                    possible.samples.peakdata = possible.samples.peakdata[possible.samples.peakdata[,11] %in% possible.samples,c(7,11)]
-                    possible.samples.order = order(possible.samples.peakdata[,1], decreasing = TRUE)
-                    possible.samples.order = possible.samples.order[!duplicated(possible.samples.peakdata[possible.samples.order,2])]
+                    possible.samples.peakdata = data.frame(xcmsData@peaks[xcmsData@groupidx[[present.index[1] ]], ])
+                    possible.samples.peakdata = possible.samples.peakdata[possible.samples.peakdata$sample %in% possible.samples,c("into","sample")]
+                    possible.samples.order = order(possible.samples.peakdata$into, decreasing = TRUE)
+                    possible.samples.order = possible.samples.order[!duplicated(possible.samples.peakdata$sample[possible.samples.order])]
                     
                     start = 1
                     stop = 0
                     all.ratio.int = matrix( NA, ncol = 4, nrow = length(possible.samples)*length(present.index))
                     for(jj in 1:length(possible.samples.order)){
                         
-                        chosen.sample = possible.samples.peakdata[possible.samples.order[jj],2]
+                        chosen.sample = possible.samples.peakdata$sample[possible.samples.order[jj]]
                         
                         present.intensities = rep(NA, length(present.index))
                         for(smp in 1:length(present.index)){
-                            sample.peakdata = xcmsData@peaks[xcmsData@groupidx[[present.index[smp] ]], ]
-                            present.intensities[smp] = max(sample.peakdata[sample.peakdata[,11] == chosen.sample,7])[1]
+                            sample.peakdata = data.frame(xcmsData@peaks[xcmsData@groupidx[[present.index[smp] ]], ])
+                            present.intensities[smp] = max(sample.peakdata$into[sample.peakdata$sample == chosen.sample])[1]
                         }
                         
                         passed.lower = rep(TRUE, length(present.intensities))
