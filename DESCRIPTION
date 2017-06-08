@@ -1,0 +1,21 @@
+Package: MataboMeeseeks
+Version: 0.1.999
+Date: 2017-06-08
+Title: Helper functions for metabolomics analysis
+Author: Charlie Beirnaert, Matthias Cuykx, Sebastian Bijtebier
+Maintainer: Charlie Beirnaert <charlie_beirnaert@icloud.com>
+Description: TBA
+Depends:
+    R (>= 3.1.0),
+Imports:
+    xcms,
+    CAMERA,
+    ggplot2,
+    mixOmics
+Suggests:
+    knitr,
+    rmarkdown
+LazyData: true
+VignetteBuilder: knitr
+License: Apache License 2.0
+RoxygenNote: 6.0.1
