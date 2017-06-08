@@ -3,7 +3,6 @@
 #' transform the data to glog.
 #'
 #'  
-#' @param 
 #'
 #' @return 
 #' 

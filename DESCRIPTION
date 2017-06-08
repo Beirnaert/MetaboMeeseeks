@@ -11,7 +11,8 @@ Imports:
     xcms,
     CAMERA,
     ggplot2,
-    mixOmics
+    mixOmics,
+    foreach
 Suggests:
     knitr,
     rmarkdown

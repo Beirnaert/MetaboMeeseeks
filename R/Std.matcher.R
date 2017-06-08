@@ -23,8 +23,6 @@
 #' @examples
 #'
 #'
-#' @importFrom RANN nn
-#'  
 #' @export
 Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL, max.ppm = NULL, max.mz = NULL, max.RT.narrow = NULL, max.RT.wide = NULL, accept.ppm.diff = NULL){
     

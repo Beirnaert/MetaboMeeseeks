@@ -3,14 +3,14 @@
 #' This function quickly performs a cross-validated Random Forest classification on a data matrix.
 #'
 #'  
-#' @param FeatureMatrix
-#' @param GroupLabels
-#' @param SampleLabels
-#' @param nFolds
-#' @param nSims
-#' @param plot.out
-#' @param nCPU
-#' @param plotcol
+#' @param FeatureMatrix The matrix of Features (obtained by using the xcms::groupval function). Matrix has to have columns for features and rows for samples. 
+#' @param GroupLabels The group labels. If not a factor a conversion will be applied. 
+#' @param SampleLabels (optional) unique sample identifier.
+#' @param nFolds Number of cross validation folds.
+#' @param nSims Number of simulations (every simulation has different folds)
+#' @param plot.out Whether to print the ROC curve (default is TRUE). 
+#' @param nCPU The number of cores to use (default is the maximum amount available minus 2)
+#' @param plotcol (optional) colour to use for the plot
 #'  
 #' @return 
 #' A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with the ROC plot data and 2) a matrix with the variable importance for each cross validated simulation (nFolds * nSims times). 

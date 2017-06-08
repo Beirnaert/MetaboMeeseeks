@@ -1,9 +1,18 @@
 #' CAMERA.accumulator
 #'
-#' Function to accumulate CAMERA results
+#' Function to accumulate CAMERA results for all combinations of given parameters.
 #'
 #'  
-#' @param  
+#' @param XCMS.object xcmsSet object
+#' @param polarity xcmsSet polarity
+#' @param perfwhm xcms perfwhm parameter
+#' @param ppm_threshold xcms ppm_threshold parameter
+#' @param ppm_threshold.multiplier parameter with which the ppm_threshold is multiplied
+#' @param mzabs xcms mzabs parameter
+#' @param intval xcms intval parameter
+#' @param maxcharge xcms maxcharge parameter
+#' @param nCPU The number of CPUs to use. Default is maximum available minus 2.
+#' @param Standards.list Yet to implement
 #' 
 #' @return 
 #'    
@@ -15,6 +24,7 @@
 #' @importFrom foreach %dopar% foreach
 #' 
 #' @export
+#' 
 CAMERA.accumulator = function(XCMS.object, polarity = NULL, perfwhm = 0.6, ppm_threshold = 10, ppm_threshold.multiplier = 1.5, mzabs = 0.02, intval = "into", maxcharge = 2, nCPU = -1, Standards.list=NULL){   
     
     
