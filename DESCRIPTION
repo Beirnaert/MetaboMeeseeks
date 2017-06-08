@@ -6,7 +6,7 @@ Author: Charlie Beirnaert, Matthias Cuykx, Sebastian Bijtebier
 Maintainer: Charlie Beirnaert <charlie_beirnaert@icloud.com>
 Description: TBA
 Depends:
-    R (>= 3.1.0),
+    R (>= 3.1.0)
 Imports:
     xcms,
     CAMERA,
