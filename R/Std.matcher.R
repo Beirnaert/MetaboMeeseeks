@@ -26,6 +26,8 @@
 #' @export
 Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL, max.ppm = NULL, max.mz = NULL, max.RT.narrow = NULL, max.RT.wide = NULL, accept.ppm.diff = NULL){
     
+    ratioCheck = FALSE
+    
     if( !is.null(Standards.ratios) ){
         if( ! "matrix" %in% class(Standards.ratios) ){
             stop("Standards.ratios is not a matrix. Should be of format (Standard X Intensitie ratio)")
