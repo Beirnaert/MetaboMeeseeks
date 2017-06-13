@@ -95,7 +95,7 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
     standards_groups.ppmDiff = matrix(NA, nrow = n.stds, ncol = n.isotpes)
     standards_groups.RTDiff = matrix(NA, nrow = n.stds, ncol = n.isotpes)
     
-    for(mt in 1:nrow(standards)){
+    for(mt in 1:n.stds){
         
         for(is in 1:n.isotpes){
             
@@ -148,7 +148,7 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
     
     if(ratioCheck){
         if(!xcmsRatio){
-            for(mt2 in 1:nrow(standards)){
+            for(mt2 in 1:n.stds){
                 present = !is.na(standards_groups[mt2,])
                 present.intensities = Data[standards_groups[mt2,present],3]
                 present.ratios = Standards.ratios[mt2,present]
@@ -166,7 +166,7 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
             }
         } else if (xcmsRatio){
             plot.output = list()
-            for(mt2 in 1:nrow(standards)){
+            for(mt2 in 1:n.stds){
                 
                 # here we calculate the ratio based on 1 sample, appearing in all features.
                 present = !is.na(standards_groups[mt2,])
@@ -275,7 +275,7 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
     }
     
     
-    #for(mt in 1:nrow(standards)){
+    #for(mt in 1:n.stds){
     #    first.na = which(is.na(standards_groups[mt,]))[1]
     #    standards_groups[mt,first.na:n.isotpes] = NA
     #}
