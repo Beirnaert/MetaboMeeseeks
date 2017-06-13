@@ -279,7 +279,7 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
     #    first.na = which(is.na(standards_groups[mt,]))[1]
     #    standards_groups[mt,first.na:n.isotopes] = NA
     #}
-    if(xcmsRatio){
+    if(xcmsRatio & ratioCheck){
         Results = list(Matched = standards_groups, ppm.diffs = standards_groups.ppmDiff, RT.diffs = standards_groups.RTDiff, Plots = plot.output)
     } else{
         Results = list(Matched = standards_groups, ppm.diffs = standards_groups.ppmDiff, RT.diffs = standards_groups.RTDiff)
