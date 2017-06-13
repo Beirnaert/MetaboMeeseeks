@@ -45,7 +45,7 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
     
     if("matrix" %in% class(Standards.mz)){
         n.stds = dim(Standards.mz)[1]  
-        n.isotpes = dim(Standards.mz)[2]    
+        n.isotopes = dim(Standards.mz)[2]    
     } else if("numeric" %in% class(Standards.mz)){
         n.stds = length(Standards.mz)  
         n.isotopes = 1
@@ -90,14 +90,14 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
         accept.ppm.diff = 5
     }
     
-    standards_groups = matrix(NA, nrow = n.stds, ncol = n.isotpes)
-    standards_groups.onlynarrow = matrix(NA, nrow = n.stds, ncol = n.isotpes)
-    standards_groups.ppmDiff = matrix(NA, nrow = n.stds, ncol = n.isotpes)
-    standards_groups.RTDiff = matrix(NA, nrow = n.stds, ncol = n.isotpes)
+    standards_groups = matrix(NA, nrow = n.stds, ncol = n.isotopes)
+    standards_groups.onlynarrow = matrix(NA, nrow = n.stds, ncol = n.isotopes)
+    standards_groups.ppmDiff = matrix(NA, nrow = n.stds, ncol = n.isotopes)
+    standards_groups.RTDiff = matrix(NA, nrow = n.stds, ncol = n.isotopes)
     
     for(mt in 1:n.stds){
         
-        for(is in 1:n.isotpes){
+        for(is in 1:n.isotopes){
             
             if( !is.na(Standards.mz[mt,is])){
                 mz.match = abs(Data[,1] - Standards.mz[mt,is])
@@ -277,7 +277,7 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
     
     #for(mt in 1:n.stds){
     #    first.na = which(is.na(standards_groups[mt,]))[1]
-    #    standards_groups[mt,first.na:n.isotpes] = NA
+    #    standards_groups[mt,first.na:n.isotopes] = NA
     #}
     if(xcmsRatio){
         Results = list(Matched = standards_groups, ppm.diffs = standards_groups.ppmDiff, RT.diffs = standards_groups.RTDiff, Plots = plot.output)
