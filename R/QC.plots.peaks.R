@@ -37,7 +37,7 @@ QC.plots.peaks = function(XCMSobject, include.postfill.plots = FALSE, className 
         class = colnames(XCMSobject@phenoData)
     }
     
-    classes = unique(XCMSobject@phenoData[class])
+    classes = unique(XCMSobject@phenoData[class][,1])
     class.meanNpeaks.prefil = rep(NA,length(classes))
     class.sdNpeaks.prefil = rep(NA,length(classes))
     class.meanNpeaks.postfil = rep(NA,length(classes))
