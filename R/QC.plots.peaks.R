@@ -5,6 +5,7 @@
 #'  
 #' @param XCMSobject An xcmsSet object
 #' @param include.postfill.plots Whether to include the peaks added after filling (only if available)
+#' @param className In case there are multiple class definitions in the XCMSobject@phenoData object, the one of interest can be specified here. If not the code will ask.
 #'  
 #' @return 
 #' a QC plot for nr of peaks
@@ -19,16 +20,31 @@
 #'  
 #' @export
 
-QC.plots.peaks = function(XCMSobject, include.postfill.plots = FALSE){
+QC.plots.peaks = function(XCMSobject, include.postfill.plots = FALSE, className = NULL){
     
-    classes = unique(XCMSobject@phenoData$class)
+    if(ncol(XCMSobject@phenoData) > 1 & is.null(className)){
+        print(head(XCMSobject@phenoData))
+        class <- readline(paste("Which of the following classes describes the individual groups: ",paste(colnames(XCMSobject@phenoData), collapse=" or ")))
+    } else if (ncol(XCMSobject@phenoData) > 1 & !is.null(className)){
+        if(className %in% colnames(XCMSobject@phenoData)){
+            class = className
+        } else{
+            warning("The 'className' variable does not match with any names in the XCMSobject@phenoData object.")
+            print(head(XCMSobject@phenoData))
+            class <- readline(paste("Which of the following classes describes the individual groups: ",paste(colnames(XCMSobject@phenoData), collapse=" or ")))
+        }
+    } else { # only 1 available class
+        class = colnames(XCMSobject@phenoData)
+    }
+    
+    classes = unique(XCMSobject@phenoData[class])
     class.meanNpeaks.prefil = rep(NA,length(classes))
     class.sdNpeaks.prefil = rep(NA,length(classes))
     class.meanNpeaks.postfil = rep(NA,length(classes))
     class.sdNpeaks.postfil = rep(NA,length(classes))
     peaks.df = data.frame(XCMSobject@peaks)
     for(cl in 1:length(classes)){
-        sample.nrs = which(XCMSobject@phenoData$class == classes[cl])
+        sample.nrs = which(XCMSobject@phenoData[class] == classes[cl])
         smpl.npeaks.prefil = rep(NA,length(sample.nrs))
         smpl.npeaks.postfil = rep(NA,length(sample.nrs))
         for(smpl in 1:length(sample.nrs)){
