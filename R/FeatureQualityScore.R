@@ -16,7 +16,7 @@
 #'
 #'  
 #' @export
-Feature.quality.score = function(XCMSobject, indices.to.keep = NULL){
+FeatureQualityScore = function(XCMSobject, indices.to.keep = NULL){
 
     if(! "xcmsSet" %in% class(XCMSobject)){
         stop("XCMSobject is not an xcmsSet")
@@ -41,7 +41,7 @@ Feature.quality.score = function(XCMSobject, indices.to.keep = NULL){
     
     Quality.score = vector("double",length(XCMSobject@groupidx))
     for(k in seq_along(indices.to.keep)){
-        Quality.score = 
+        Quality.score = NA
     }
     
     
