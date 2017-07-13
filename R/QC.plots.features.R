@@ -38,7 +38,7 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL){
     
     classes = as.character(unique(XCMSobject@phenoData[class][,1]))
     
-    max.class.size = max(hist(as.numeric(XCMSobject@phenoData[class]))$counts)
+    max.class.size = max(table(stringr::str_count(as.character(XCMSobject@phenoData[class][,1]))))
     missing.vals.df = expand.grid(class = classes, Nmissing = seq(0, max.class.size, 1),count = 0)
     colnames(missing.vals.df)[3] = "count"
     RSD.matrix = matrix(NA,ncol=ncol(FeatureMatrix), nrow = length(classes))
