@@ -5,6 +5,7 @@
 #'  
 #' @param FeatureMatrix the matrix of Features (obtained by using the xcms::groupval function). Matrix has to have columns for features and rows for samples. 
 #' @param XCMSobject An xcmsSet object
+#' @param className In case there are multiple class definitions in the XCMSobject@phenoData object, the one of interest can be specified here. If not the code will ask.
 #'  
 #' @return 
 #' several QC plots
@@ -18,16 +19,32 @@
 #' @import ggplot2
 #'  
 #' @export
-QC.plots.features = function(FeatureMatrix, XCMSobject){
+QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL){
  
-    classes = unique(XCMSobject@phenoData$class)
-    max.class.size = max(hist(as.numeric(XCMSobject@phenoData$class))$counts)
+    if(ncol(XCMSobject@phenoData) > 1 & is.null(className)){
+        print(head(XCMSobject@phenoData))
+        class <- readline(paste("Which of the following classes describes the individual groups: ",paste(colnames(XCMSobject@phenoData), collapse=" or ")))
+    } else if (ncol(XCMSobject@phenoData) > 1 & !is.null(className)){
+        if(className %in% colnames(XCMSobject@phenoData)){
+            class = className
+        } else{
+            warning("The 'className' variable does not match with any names in the XCMSobject@phenoData object.")
+            print(head(XCMSobject@phenoData))
+            class <- readline(paste("Which of the following classes describes the individual groups: ",paste(colnames(XCMSobject@phenoData), collapse=" or ")))
+        }
+    } else { # only 1 available class
+        class = colnames(XCMSobject@phenoData)
+    }
+    
+    classes = as.character(unique(XCMSobject@phenoData[class][,1]))
+    
+    max.class.size = max(hist(as.numeric(XCMSobject@phenoData[class]))$counts)
     missing.vals.df = expand.grid(class = classes, Nmissing = seq(0, max.class.size, 1),count = 0)
     colnames(missing.vals.df)[3] = "count"
     RSD.matrix = matrix(NA,ncol=ncol(FeatureMatrix), nrow = length(classes))
     no.missing.matrix = matrix(0,ncol=ncol(FeatureMatrix), nrow = length(classes))
     for(cl in 1:length(classes)){
-        sample.nrs = which(XCMSobject@phenoData$class == classes[cl])
+        sample.nrs = which(XCMSobject@phenoData[class] == classes[cl])
         missing.values = rep(0,ncol(FeatureMatrix))
         for(ft in 1:ncol(FeatureMatrix)){
             missing.values[ft] = sum( FeatureMatrix[sample.nrs, ft] < 0.1)
