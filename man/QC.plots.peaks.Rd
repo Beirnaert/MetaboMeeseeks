@@ -4,12 +4,14 @@
 \alias{QC.plots.peaks}
 \title{QC plots for peak data}
 \usage{
-QC.plots.peaks(XCMSobject, include.postfill.plots = FALSE)
+QC.plots.peaks(XCMSobject, include.postfill.plots = FALSE, className = NULL)
 }
 \arguments{
 \item{XCMSobject}{An xcmsSet object}
 
 \item{include.postfill.plots}{Whether to include the peaks added after filling (only if available)}
+
+\item{className}{In case there are multiple class definitions in the XCMSobject@phenoData object, the one of interest can be specified here. If not the code will ask.}
 }
 \value{
 a QC plot for nr of peaks

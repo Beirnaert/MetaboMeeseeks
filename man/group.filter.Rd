@@ -4,20 +4,20 @@
 \alias{group.filter}
 \title{Group Filtering}
 \usage{
-group.filter(XCMSobject, max.RT.diff = NULL, max.ppm.diff = NULL,
+group.filter(XCMSobject, max.RT.width = NULL, max.ppm.diff = NULL,
   max.dupl.prop = NULL, max.missing.prop = NULL,
   thresholds.to.pass = NULL)
 }
 \arguments{
 \item{XCMSobject}{An xcmsSet object after peak picking.}
 
-\item{max.RT.diff}{The maximal allowed RT width for a group}
+\item{max.RT.width}{The maximal allowed RT width for a group}
 
 \item{max.ppm.diff}{The maximal allowed ppm difference within a group}
 
-\item{max.dupl.prop}{The maximal allowed proportion of duplicated peaks}
+\item{max.dupl.prop}{The maximal allowed proportion of duplicated peaks in the group}
 
-\item{max.missing.prop}{The maximal allowed proportion of missing peaks}
+\item{max.missing.prop}{The maximal allowed proportion of missing peaks in the group}
 
 \item{thresholds.to.pass}{The number of thresholds to pass (default is all)}
 }
@@ -25,9 +25,14 @@ group.filter(XCMSobject, max.RT.diff = NULL, max.ppm.diff = NULL,
 
 }
 \description{
-After grouping and peak filling, this function filters out bad groups/features.
+After grouping and peak filling, this function filters out bad groups/features. 
+There is the posibility of supplying groups of interest in which case the
 }
 \examples{
+
+#@param ToDo......ClassesOfInterest (optional) The classes to include in the calculation of group properties. 
+#@param classVector (required if ClassesOfInterest provided) vector with classlabels.
+#@param ToDo.......WithinGroupsOfInterest (default is FALSE), Option to choose to do the calculations within class instead of over the entire group/feature
 
  
 }

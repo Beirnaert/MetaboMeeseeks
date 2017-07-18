@@ -1,15 +1,16 @@
 #' Group Filtering
 #'
-#' After grouping and peak filling, this function filters out bad groups/features.
+#' After grouping and peak filling, this function filters out bad groups/features. 
+#' There is the posibility of supplying groups of interest in which case the 
 #'
 #'  
 #' @param XCMSobject An xcmsSet object after peak picking.
-#' @param max.RT.diff The maximal allowed RT width for a group
+#' @param max.RT.width The maximal allowed RT width for a group
 #' @param max.ppm.diff The maximal allowed ppm difference within a group
-#' @param max.dupl.prop The maximal allowed proportion of duplicated peaks
-#' @param max.missing.prop The maximal allowed proportion of missing peaks
+#' @param max.dupl.prop The maximal allowed proportion of duplicated peaks in the group
+#' @param max.missing.prop The maximal allowed proportion of missing peaks in the group
 #' @param thresholds.to.pass The number of thresholds to pass (default is all)
-#' 
+#'  
 #' 
 #' @return 
 #' 
@@ -19,14 +20,27 @@
 #'
 #' @examples
 #'
-
+#' #@param ToDo......ClassesOfInterest (optional) The classes to include in the calculation of group properties. 
+#' #@param classVector (required if ClassesOfInterest provided) vector with classlabels.
+#' #@param ToDo.......WithinGroupsOfInterest (default is FALSE), Option to choose to do the calculations within class instead of over the entire group/feature
+#'
 #'  
 #' @export
-group.filter= function(XCMSobject, max.RT.diff = NULL, max.ppm.diff = NULL, max.dupl.prop = NULL, max.missing.prop = NULL, thresholds.to.pass = NULL){
+group.filter= function(XCMSobject, max.RT.width = NULL, max.ppm.diff = NULL, max.dupl.prop = NULL, max.missing.prop = NULL, thresholds.to.pass = NULL){
     
     if(is.null(thresholds.to.pass)){
-        thresholds.to.pass = sum(!c(is.null(max.RT.diff), is.null(max.ppm.diff), is.null(max.dupl.prop), is.null(max.missing.prop)))
+        thresholds.to.pass = sum(!c(is.null(max.RT.width), is.null(max.ppm.diff), is.null(max.dupl.prop), is.null(max.missing.prop)))
     }
+    
+    #if( WithinGroupsOfInterest & is.null(ClassesOfInterest)){
+    #    stop("ClassesOfInterest is not provided. This is necessary when WithinGroupsOfInterest = TRUE")
+    #}
+    
+    #if( !is.null(ClassesOfInterest) & is.null(classVector)){
+    #    stop("classVector is not provided. This is necessary when ClassesOfInterest is provided")
+    #}
+    
+    
     
     nGroups = length(XCMSobject@groupidx)
     group.stats = matrix(NA,ncol = 8, nrow = nGroups)
@@ -57,16 +71,16 @@ group.filter= function(XCMSobject, max.RT.diff = NULL, max.ppm.diff = NULL, max.
     }
     
     group.stats$score = 0
-    if(!is.null(max.RT.diff)){
-        group.stats$score[group.stats$RT.diff <= max.RT.diff] = group.stats$score[group.stats$RT.diff <= max.RT.diff] + 1
+    if(!is.null(max.RT.width)){
+        group.stats$score[group.stats$RT.diff <= max.RT.width] = group.stats$score[group.stats$RT.diff <= max.RT.width] + 1
     }
-    if(!is.null(max.RT.diff)){
+    if(!is.null(max.RT.width)){
         group.stats$score[group.stats$ppm.diff <= max.ppm.diff] = group.stats$score[group.stats$ppm.diff <= max.ppm.diff] + 1
     }
-    if(!is.null(max.RT.diff)){
+    if(!is.null(max.RT.width)){
         group.stats$score[group.stats$prop.dupl <= max.dupl.prop] = group.stats$score[group.stats$prop.dupl <= max.dupl.prop] + 1
     }
-    if(!is.null(max.RT.diff)){
+    if(!is.null(max.RT.width)){
         group.stats$score[group.stats$prop.missing <= max.missing.prop] = group.stats$score[group.stats$prop.missing <= max.missing.prop] + 1
     }
     

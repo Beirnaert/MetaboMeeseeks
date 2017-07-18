@@ -6,6 +6,7 @@
 #' @param FeatureMatrix the matrix of Features (obtained by using the xcms::groupval function). Matrix has to have columns for features and rows for samples. 
 #' @param XCMSobject An xcmsSet object
 #' @param className In case there are multiple class definitions in the XCMSobject@phenoData object, the one of interest can be specified here. If not the code will ask.
+#' @param NA.numeric.limit If missing values are not indicated as NA but with a numeric value like 0, supply the numerical value under which values are considered missing.
 #'  
 #' @return 
 #' several QC plots
@@ -19,7 +20,7 @@
 #' @import ggplot2
 #'  
 #' @export
-QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL){
+QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.numeric.limit = NULL){
  
     if(ncol(XCMSobject@phenoData) > 1 & is.null(className)){
         print(head(XCMSobject@phenoData))

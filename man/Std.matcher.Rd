@@ -13,7 +13,7 @@ Std.matcher(Standards.mz, Standards.RT, Data, Standards.ratios = NULL,
 
 \item{Standards.RT}{A vector with the RT values}
 
-\item{Data}{This can be either a) a matrix with 2 or 3* columns (mz, RT, Intensity*), b) an xcmsSet object post grouping (the groups are features, intensity ratio's can be checked) or c) an XCMS@groups matrix object (if only this is supplied there will be no intensity ratio check). Note that an XCMS@peaks object is also supported but the function only returns 1 match per standard (the closest one, or the first of a number of equally close ones)}
+\item{Data}{This can be either a) a matrix with 2 or 3* columns (mz, RT, Intensity*) without missing values, b) an xcmsSet object post grouping (the groups are features, intensity ratio's can be checked) or c) an XCMS@groups matrix object (if only this is supplied there will be no intensity ratio check). Note that an XCMS@peaks object is also supported but the function only returns 1 match per standard (the closest one, or the first of a number of equally close ones)}
 
 \item{Standards.ratios}{Optional matrix. Matrix with the intensity ratio's}
 
