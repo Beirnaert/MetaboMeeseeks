@@ -50,7 +50,7 @@ BatchSplitR <- function(xcmsObject, BatchClassLabel = NULL, BatchNames = NULL ){
         splitObject@groupidx = list()
         phenoDat = xcmsObject@phenoData[split.samples,]
         for(j in 1:ncol(phenoDat)){
-            phenoDat[,j] = xcmsSets.batchSplit[[1]]@phenoData[,j] %>% as.character() %>% as.factor
+            phenoDat[,j] = phenoDat[,j] %>% as.character() %>% as.factor
         }
         splitObject@phenoData = phenoDat
         splitObject@rt$raw = xcmsObject@rt$raw[split.samples]
