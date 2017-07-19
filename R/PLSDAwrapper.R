@@ -21,7 +21,7 @@
 #' @export
 PLSDAwrapper <- function(plsdaMatrix, classLabels, plotMarks = NULL, plotOutputs = FALSE){
     
-    if(lenth(classLabels) != nrow(plsdaMatrix)){
+    if(length(classLabels) != nrow(plsdaMatrix)){
         stop("the number of classlabels is not equal to the amount of rows in the plsdaMatrix.")
     }
     
