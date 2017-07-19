@@ -23,7 +23,6 @@ doe dan analyse loess, PLSDA van batch 1 en 2 afzonderlijk. Giet alles in data f
 }
 \examples{
 
-
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
