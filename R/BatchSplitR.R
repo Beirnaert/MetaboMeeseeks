@@ -56,6 +56,7 @@ BatchSplitR <- function(xcmsObject, BatchClassLabel = NULL, BatchNames = NULL ){
         splitObject@rt$raw = xcmsObject@rt$raw[split.samples]
         splitObject@rt$corrected = splitObject@rt$raw
         splitObject@rt$IntraBatchRTCorrection = xcmsObject@rt$corrected[split.samples]
+        splitObject@filepaths = xcmsObject@filepaths[split.samples]
         
         xcmsObject.split[[k]] = splitObject
         #mutual.RT.correction[[k]] = list(raw = xcmsObject@rt$raw[split.samples], corrected = xcmsObject@rt$corrected[split.samples])
