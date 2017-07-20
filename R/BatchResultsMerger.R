@@ -24,6 +24,7 @@ BatchResultsMerger = function(PLSDAresults.list, BatchProcessingStructure, origi
     original.column.indices.restructured  = list.initiation
     GroupData.restructured                = list.initiation
     GroupData.restructured.relevantGroups = list.initiation
+    FoldChanges.restructured              = list.initiation
     cter = 1
     for(l in 1:nrow(BatchProcessingStructure)){
         sublist.initiation = vector("list", length = BatchProcessingStructure$nBatches[l])
@@ -32,12 +33,14 @@ BatchResultsMerger = function(PLSDAresults.list, BatchProcessingStructure, origi
         original.column.indices.restructured[[l]]  = sublist.initiation
         GroupData.restructured[[l]]                = sublist.initiation
         GroupData.restructured.relevantGroups[[l]] = sublist.initiation
+        FoldChanges.restructured[[l]]              = sublist.initiation
         
         for(sublist in 1:BatchProcessingStructure$nBatches[l]){
             PLSDAresults.restructured[[l]][[sublist]] = PLSDAresults.list[[cter]]
             original.column.indices.restructured[[l]][[sublist]] = original.column.indices.list[[cter]]
             GroupData.restructured[[l]][[sublist]] = GroupData.list[[cter]]
             GroupData.restructured.relevantGroups[[l]][[sublist]] = GroupData.list[[cter]][original.column.indices.list[[cter]], ]
+            FoldChanges.restructured[[l]][[sublist]] = FoldChanges.list[[cter]]
             cter = cter + 1
         }
         
