@@ -53,9 +53,9 @@ BatchSplitR <- function(xcmsObject, BatchClassLabel = NULL, BatchNames = NULL ){
             phenoDat[,j] = phenoDat[,j] %>% as.character() %>% as.factor
         }
         splitObject@phenoData = phenoDat
-        splitObject@rt$raw = xcmsObject@rt$raw[split.samples]
-        splitObject@rt$corrected = splitObject@rt$raw
-        splitObject@rt$IntraBatchRTCorrection = xcmsObject@rt$corrected[split.samples]
+        splitObject@rt$raw = xcmsObject@rt$corrected[split.samples]
+        splitObject@rt$corrected = xcmsObject@rt$corrected[split.samples]
+        splitObject@rt$Original_raw = xcmsObject@rt$raw[split.samples]
         splitObject@filepaths = xcmsObject@filepaths[split.samples]
         
         xcmsObject.split[[k]] = splitObject
