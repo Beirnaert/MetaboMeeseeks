@@ -70,7 +70,7 @@ BatchResultsMerger = function(PLSDAresults.list, BatchProcessingStructure, origi
         
         interbatchResults$Batch1.foldchange[1:length(original.column.indices.restructured[[l]][[1]])] = FoldChanges.list[[l]][[1]]
         interbatchResults$Batch2.foldchange[1:length(original.column.indices.restructured[[l]][[1]])] = FoldChanges.list[[l]][[2]][groupMatches[[1]]$Matched]
-        interbatchResults$Batch2.foldchange[(length(original.column.indices.restructured[[l]][[1]])+1):length(interbatchResults$Batch2.index)] = FoldChanges.listd[[l]][[2]][ which(!seq(1:length(original.column.indices.restructured[[l]][[2]])) %in% unique(groupMatches[[sublist-1]]$Matched[!is.na(groupMatches[[sublist-1]]$Matched)]))  ]
+        interbatchResults$Batch2.foldchange[(length(original.column.indices.restructured[[l]][[1]])+1):length(interbatchResults$Batch2.index)] = FoldChanges.list[[l]][[2]][ which(!seq(1:length(original.column.indices.restructured[[l]][[2]])) %in% unique(groupMatches[[sublist-1]]$Matched[!is.na(groupMatches[[sublist-1]]$Matched)]))  ]
         
         PLSDA.interbatchResults[[l]] = interbatchResults
     }
