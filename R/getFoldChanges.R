@@ -2,8 +2,11 @@
 #'
 #' Filter out isotopes based on the PUTMEDID concept
 #'
-#' @param RTcorr1.xcmsGrouped XCMS object of first RT correction method (post RT correction and subsequent grouping)
-#' @param RTcorr2.xcmsGrouped XCMS object of second RT correction method (post RT correction and subsequent grouping)
+#' @param DataMatrix The data matrix
+#' @param classlabels the class labels (nr of vector elements must be equal to number of rows in DataMatrix)
+#' @param baseClass The baseclass for the fold change clauculation
+#' @param classOfInterest The class of interest for the fold change calculation
+#' @param datatype Indication whether the Datamatrix is intensities (ints) or log2 values (log2s).
 #'  
 #' 
 #'   
@@ -16,7 +19,7 @@
 #' 
 #' 
 #' @export
-getFoldChanges <- function(DataMatrix, classlabels, baseClass = NULL, classOfInterest = NULL){
+getFoldChanges <- function(DataMatrix, classlabels, baseClass = NULL, classOfInterest = NULL, datatype = "ints"){
     
     if(is.null(baseClass)){
         stop("No baseClass provided")
@@ -34,7 +37,14 @@ getFoldChanges <- function(DataMatrix, classlabels, baseClass = NULL, classOfInt
         stop("Nr. of classlabels does not match the amount of rows in the DataMatrix")
     }
     
-    foldChanges = (colMeans(DataMatrix[classlabels == classOfInterest,]) - colMeans(DataMatrix[classlabels == baseClass,]))/colMeans(DataMatrix[classlabels == baseClass,])
+    if(datatype == "ints"){
+        foldChanges = colMeans(DataMatrix[classlabels == classOfInterest,])/ colMeans(DataMatrix[classlabels == baseClass,])
+    } else if(datatype == "log2s"){
+        foldChanges = 2^(colMeans(DataMatrix[classlabels == classOfInterest,]) - colMeans(DataMatrix[classlabels == baseClass,]))
+    } else{
+        warning("no datatype provided, assumed data are intensities")
+        foldChanges = colMeans(DataMatrix[classlabels == classOfInterest,])/ colMeans(DataMatrix[classlabels == baseClass,])
+    }
     
     return(foldChanges)
 }
