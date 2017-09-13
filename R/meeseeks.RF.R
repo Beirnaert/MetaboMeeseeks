@@ -237,7 +237,8 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         }
     }
     
-    
+    random_diag_line=data.frame(c(0,1),c(0,1))
+    colnames(random_diag_line)=c("x","y")
     
     
     pp <- ggplot() + 

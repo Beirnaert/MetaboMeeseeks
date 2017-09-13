@@ -193,6 +193,8 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         }
     }
     
+    random_diag_line=data.frame(c(0,1),c(0,1))
+    colnames(random_diag_line)=c("x","y")
     
     pp <- ggplot() + 
         geom_line(data = RC, aes(ROCx, ROCy,colour=plotcol)) + 
