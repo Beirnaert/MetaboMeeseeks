@@ -199,7 +199,7 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
         }
     }
     
-    Performance = rbindlist(perflist)
+    Performance = data.table::rbindlist(perflist)
     
     Nplotpoints = 100
     
