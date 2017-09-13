@@ -242,7 +242,7 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
         guides(colour=guide_legend(title="Method"), fill = guide_legend(title="95% interval"))+
         xlab("False Positive Rate (1-specificity)") +
         ylab("True Positive Rate (Sensitivity)") +
-        ggtitle("ROC curve for SVM classification") +
+        ggtitle(paste("SVM ROC. Mean AUC = ", mean(AUCs),sep = "")) +
         theme_bw() +
         theme(plot.title = element_text(hjust = 0.5)) 
     
