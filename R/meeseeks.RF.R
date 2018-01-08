@@ -9,6 +9,7 @@
 #' @param nFolds Number of cross validation folds.
 #' @param nSims Number of simulations (every simulation has different folds)
 #' @param plot.out Whether to print the ROC curve (default is TRUE). 
+#' @param plot.type Type of plot ourput. "ROC" for receiver operacter characteristic (default) or "PR" for precision-recall.
 #' @param nCPU The number of cores to use (default is the maximum amount available minus 2)
 #' @param plotcol (optional) colour to use for the plot
 #'  
@@ -23,13 +24,10 @@
 #' @importFrom foreach %dopar%
 #'  
 #' @export
-Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, nCPU = -1, plotcol = NULL){
+Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL){
     
-    
-  
-    #FeatureMatrix = BreastCancer[,2:10]
-    
-    #GroupLabels = BreastCancer$Class
+    # FeatureMatrix = BreastCancer[,2:10]
+    # GroupLabels = BreastCancer$Class
     # SampleLabels = BreastCancer$Id
     
     if(length(unique(GroupLabels)) != 2){
@@ -113,8 +111,8 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
             predcv.list <- vector("list",nFolds)
             #predcv.votes.list = vector("list",nFolds)
             meeseeks.varImportance <- matrix(NA,ncol = ncol(FeatureMatrix), nrow = nFolds)
-
-           
+            
+            
             for (i in 1:nFolds){
                 
                 validData <- FeatureMatrix[Group.fold[[i]],]
@@ -135,7 +133,7 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
                 
                 
             }
-           
+            
             
             # evaluate 1 run performance
             
@@ -148,12 +146,19 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
             predcv.df$decision.values<- as.numeric(as.character(predcv.df$decision.values))
             
             rocpred <- ROCR::prediction(predictions = predcv.df$decision.values, labels=GroupLabels)
-            
             perf.roc <- ROCR::performance(rocpred, measure = "tpr", x.measure = "fpr")
-            #perf.pr <- ROCR::performance(rocpred, measure = "prec", x.measure = "rec")
+            perf.pr <- ROCR::performance(rocpred, measure = "prec", x.measure = "rec")
             
             perf.roc.xy=data.frame(perf.roc@x.values,perf.roc@y.values)
+            perf.pr.xy=data.frame(perf.pr@x.values,perf.pr@y.values)
+            
             colnames(perf.roc.xy)=c("minspecificity","sensitivity")
+            colnames(perf.pr.xy)=c("recall", "precision")
+            
+            if(is.nan(perf.pr.xy$precision[1])){
+                perf.pr.xy$precision[1] = 1
+            }
+            
             random_diag_line=data.frame(c(0,1),c(0,1))
             colnames(random_diag_line)=c("x","y")
             
@@ -168,7 +173,7 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
             perf.roc.xy$AUC = aucvalue@y.values[[1]]
             
             
-            ROC.and.importance = list(ROC = perf.roc.xy, varImp = meeseeks.varImportance)
+            ROC.and.importance = list(ROC = perf.roc.xy, PR = perf.pr.xy, varImp = meeseeks.varImportance)
             
             results[[iPar]] =ROC.and.importance
             
@@ -189,23 +194,30 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
     ##########################################################################################
     ##########################################################################################
     
-    perflist = list()
+    perflistROC = list()
+    perflistPR = list()
     AUCs = rep(NA, nSims)
     varImportance = matrix(NA, ncol = ncol(FeatureMatrix), nrow = nFolds*nSims)
-
+    
     cter = 1
     for(main.loop in 1:length(performanceList)){
         for(small.loop in 1:length(performanceList[[main.loop]])){
-            ROCdata = performanceList[[main.loop]][[small.loop]][[1]][,1:2]
+            ROCdata = performanceList[[main.loop]][[small.loop]]$ROC[,1:2]
             ROCdata$sim = cter
-            perflist[[cter]] = ROCdata
-            AUCs[cter] = performanceList[[main.loop]][[small.loop]][[1]][1,3]
-            varImportance[((cter-1)*nFolds + 1):(cter*nFolds),] = performanceList[[main.loop]][[small.loop]][[2]]
+            perflistROC[[cter]] = ROCdata
+            
+            PRdata = performanceList[[main.loop]][[small.loop]]$PR[,1:2] # is this true charlie? 4,5? 
+            PRdata$sim = cter
+            perflistPR[[cter]] = PRdata
+            
+            AUCs[cter] = performanceList[[main.loop]][[small.loop]]$ROC[1,3]
+            varImportance[((cter-1)*nFolds + 1):(cter*nFolds),] = performanceList[[main.loop]][[small.loop]]$varImp
             cter = cter + 1
         }
     }
     
-    Performance = data.table::rbindlist(perflist)
+    PerformanceROC = data.table::rbindlist(perflistROC)
+    PerformancePR = data.table::rbindlist(perflistPR)
     
     Nplotpoints = 100
     
@@ -214,17 +226,20 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
                     lower = rep(NA,Nplotpoints),
                     upper = rep(NA,Nplotpoints))
     
+    PR = data.frame(PRx = seq(0, 1, length.out = Nplotpoints),
+                    PRy = rep(NA,Nplotpoints),
+                    lower = rep(NA,Nplotpoints),
+                    upper = rep(NA,Nplotpoints))
+    
     
     
     for( l in 1: nrow(RC)){
-        
         if(l!=1){
-            ROC.data = Performance[Performance$minspecificity > RC$ROCx[l-1] & Performance$minspecificity <= RC$ROCx[l],  ]
+            ROC.data = PerformanceROC[PerformanceROC$minspecificity > RC$ROCx[l-1] & PerformanceROC$minspecificity <= RC$ROCx[l],  ]
         }else{
-            ROC.data = Performance[Performance$minspecificity <= RC$ROCx[l],  ]
+            ROC.data = PerformanceROC[PerformanceROC$minspecificity <= RC$ROCx[l],  ]
         }
         RC[l,2:4] = quantile(ROC.data$sensitivity, c(1/2,0.025,0.975))
-        
     }
     RC = rbind(c(0,0,0,RC$upper[1]),RC)
     
@@ -237,12 +252,31 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         }
     }
     
+    for( l in 1: nrow(PR)){
+        if(l!=1){
+            PR.data = PerformancePR[PerformancePR$recall > PR$PRx[l-1] & PerformancePR$recall <= PR$PRx[l],  ]
+        }else{
+            PR.data = PerformancePR[PerformancePR$recall <= PR$PRx[l],  ]
+        }
+        PR[l,2:4] = quantile(PR.data$precision, c(1/2,0.025,0.975))
+    }
+    
+    if(anyNA(PR)){
+        incomplete.cases = which(!complete.cases(PR))
+        for(cc in 1:length(incomplete.cases)){
+            for(incomplete.col in which(is.na(PR[incomplete.cases[cc],]))){
+                PR[incomplete.cases[cc],incomplete.col] = PR[incomplete.cases[cc]-1,incomplete.col]
+            }
+        }
+    }
+    
     random_diag_line=data.frame(c(0,1),c(0,1))
     colnames(random_diag_line)=c("x","y")
     
     
-    pp <- ggplot() + 
-        geom_line(data = RC, aes(ROCx, ROCy,colour=plotcol)) + 
+    
+    ppROC <- ggplot() + 
+        geom_line(data = RC, aes(ROCx, ROCy, colour=plotcol)) + 
         geom_ribbon(data = RC, aes(x=ROCx, ymin=lower, ymax=upper, fill = plotcol), alpha=0.2) +
         geom_line(data=random_diag_line, aes(x=x,y=y),colour="black") +
         guides(colour=guide_legend(title="Method"), fill = guide_legend(title="95% interval"))+
@@ -250,14 +284,36 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         ylab("True Positive Rate (Sensitivity)") +
         ggtitle(paste("Random Forest ROC. Mean AUC = ", mean(AUCs),sep = "")) +
         theme_bw() +
-        theme(plot.title = element_text(hjust = 0.5)) 
+        theme(plot.title = element_text(hjust = 0.5)) +
+        scale_x_continuous(expand = c(0.001,0.001)) +
+        scale_y_continuous(expand = c(0.001,0.001))
+    
+    ppPR <- ggplot() + 
+        geom_line(data = PR, aes(PRx, PRy, colour=plotcol)) + 
+        geom_ribbon(data = PR, aes(x=PRx, ymin=lower, ymax=upper, fill = plotcol), alpha=0.2) +
+        #geom_line(data=random_diag_line, aes(x=x,y=y),colour="black") +
+        guides(colour=guide_legend(title="Method"), fill = guide_legend(title="95% interval"))+
+        xlab("Recall") +
+        ylab("Prcision") +
+        ggtitle("Random Forest PR") +
+        theme_bw() +
+        theme(plot.title = element_text(hjust = 0.5)) +
+        scale_x_continuous(expand = c(0.01,0.01)) +
+        scale_y_continuous(expand = c(0.01,0.01))
+    
+    
     
     if(plot.out){
-        print(pp)
+        if( plot.type != "PR"){
+            print(ppROC)
+        } else{
+            print(ppPR)
+        }
+        
     } 
     
     
-    Results = list( ROCdata = RC, varImportance = varImportance)
+    Results = list( ROCdata = RC, varImportance = varImportance, ROCplot = ppROC, PRplor = ppPR)
     return(Results)
     
 }
