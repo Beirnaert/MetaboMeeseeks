@@ -239,7 +239,11 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         }else{
             ROC.data = PerformanceROC[PerformanceROC$minspecificity <= RC$ROCx[l],  ]
         }
-        RC[l,2:4] = quantile(ROC.data$sensitivity, c(1/2,0.025,0.975))
+        if(nrow(ROC.data) != 0){
+            RC[l,2:4] = quantile(ROC.data$sensitivity, c(1/2,0.025,0.975))
+        } else{
+            RC[l,2:4] = RC[(l-1),2:4]
+        }
     }
     RC = rbind(c(0,0,0,RC$upper[1]),RC)
     
@@ -258,7 +262,7 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         }else{
             PR.data = PerformancePR[PerformancePR$recall <= PR$PRx[l],  ]
         }
-        PR[l,2:4] = quantile(PR.data$precision, c(1/2,0.025,0.975))
+        PR[l,2:4] = quantile(PR.data$precision, c(1/2,0.025,0.975), na.rm = T)
     }
     
     if(anyNA(PR)){
@@ -285,8 +289,8 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         ggtitle(paste("Random Forest ROC. Mean AUC = ", mean(AUCs),sep = "")) +
         theme_bw() +
         theme(plot.title = element_text(hjust = 0.5)) +
-        scale_x_continuous(expand = c(0.001,0.001)) +
-        scale_y_continuous(expand = c(0.001,0.001))
+        scale_x_continuous(limits = c(0,1), expand = c(0.005,0.005)) +
+        scale_y_continuous(limits = c(0,1), expand = c(0.005,0.005))
     
     ppPR <- ggplot() + 
         geom_line(data = PR, aes(PRx, PRy, colour=plotcol)) + 
@@ -298,8 +302,8 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         ggtitle("Random Forest PR") +
         theme_bw() +
         theme(plot.title = element_text(hjust = 0.5)) +
-        scale_x_continuous(expand = c(0.01,0.01)) +
-        scale_y_continuous(expand = c(0.01,0.01))
+        scale_x_continuous(limits = c(0,1), expand = c(0.005,0.005)) +
+        scale_y_continuous(limits = c(0,1), expand = c(0.005,0.005))
     
     
     
