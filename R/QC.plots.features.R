@@ -41,7 +41,7 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
     }
     
     batchspecific = ""
-    if(!is.null(BOI.varname) & !is.null(BOI)){
+    if(!is.null(BOI.varname) & !is.null(BOI) & !is.na(BOI)){
         batchspecific = paste(",", BOI, sep = " ")
         FeatureMatrix = FeatureMatrix[XCMSobject@phenoData[BOI.varname][,1] ==  BOI ,]
         XCMSobject@phenoData = XCMSobject@phenoData[XCMSobject@phenoData[BOI.varname][,1] ==  BOI,]
