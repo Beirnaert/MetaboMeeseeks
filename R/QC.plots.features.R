@@ -7,6 +7,9 @@
 #' @param XCMSobject An xcmsSet object
 #' @param className In case there are multiple class definitions in the XCMSobject@phenoData object, the one of interest can be specified here. If not the code will ask.
 #' @param NA.numeric.limit If missing values are not indicated as NA but with a numeric value like 0, supply the numerical value under which values are considered missing.
+#' @param plottitle (Optional) Plot title 
+#' @param BOI.varname (Optional) In case the RSD's need only be calculated for a specific subset of batches, provide the variable name that contains batch information here
+#' @param BOI (Optinal) The name of the batch of interest. BOI.varname has to be supplied as well
 #'  
 #' @return 
 #' several QC plots
@@ -20,7 +23,7 @@
 #' @import ggplot2
 #'  
 #' @export
-QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.numeric.limit = NULL, plottitle = NULL){
+QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.numeric.limit = NULL, plottitle = NULL, BOI.varname = NULL, BOI = NULL){
  
     if(ncol(XCMSobject@phenoData) > 1 & is.null(className)){
         print(head(XCMSobject@phenoData))
@@ -35,6 +38,13 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
         }
     } else { # only 1 available class
         class = colnames(XCMSobject@phenoData)
+    }
+    
+    batchspecific = ""
+    if(!is.null(BOI.varname) & !is.null(BOI)){
+        batchspecific = paste(",", BOI, sep = " ")
+        FeatureMatrix = FeatureMatrix[XCMSobject@phenoData[BOI.varname][,1] ==  BOI ,]
+        XCMSobject@phenoData = XCMSobject@phenoData[XCMSobject@phenoData[BOI.varname][,1] ==  BOI,]
     }
     
     classes = as.character(unique(XCMSobject@phenoData[class][,1]))
@@ -93,7 +103,7 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
                  show.legend = FALSE) 
         
     if(!is.null(plottitle)){
-        gg1 <- gg1 + ggtitle(plottitle) +
+        gg1 <- gg1 + ggtitle(paste(plottitle, batchspecific, sep = " ") ) +
             theme(plot.title = element_text(hjust = 0.5))
     }
     print(gg1)
@@ -114,7 +124,7 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
         geom_hline(color = "#e6e6e6", yintercept = 0, size= 0.7)
     # axis ticks per 20, median RSD after legend
     if(!is.null(plottitle)){
-        gg2 <- gg2 + ggtitle(plottitle) +
+        gg2 <- gg2 + ggtitle( paste(plottitle, batchspecific, sep = " ")  ) +
             theme(plot.title = element_text(hjust = 0.5))
     }
     print(gg2)
@@ -129,7 +139,7 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
         geom_text(data= npeaks.df, aes(x=classes, y=0, label=Npeaks),colour = "red") +
         theme_bw()
     if(!is.null(plottitle)){
-        gg3 <- gg3 + ggtitle(plottitle) +
+        gg3 <- gg3 + ggtitle( paste(plottitle, batchspecific, sep = " ")  ) +
             theme(plot.title = element_text(hjust = 0.5))
     }
     print(gg3)
