@@ -20,7 +20,7 @@
 #' @import ggplot2
 #'  
 #' @export
-QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.numeric.limit = NULL){
+QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.numeric.limit = NULL, plottitle = NULL){
  
     if(ncol(XCMSobject@phenoData) > 1 & is.null(className)){
         print(head(XCMSobject@phenoData))
@@ -92,6 +92,9 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
                  colour = "black",
                  show.legend = FALSE) 
         
+    if(!is.null(plottitle)){
+        gg1 <- gg1 + ggtitle(plottitle)
+    }
     print(gg1)
     
  
@@ -109,7 +112,9 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
         theme_bw() +
         geom_hline(color = "#e6e6e6", yintercept = 0, size= 0.7)
     # axis ticks per 20, median RSD after legend
-    
+    if(!is.null(plottitle)){
+        gg2 <- gg2 + ggtitle(plottitle)
+    }
     print(gg2)
     
     Npeaks_pr_class = rep(NA,length(classes))
@@ -121,7 +126,9 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
         geom_boxplot() +
         geom_text(data= npeaks.df, aes(x=classes, y=0, label=Npeaks),colour = "red") +
         theme_bw()
-    
+    if(!is.null(plottitle)){
+        gg3 <- gg3 + ggtitle(plottitle)
+    }
     print(gg3)
     
     mRSD <- data.frame(cbind(as.character(classes),rowMedians(RSD.matrix,na.rm=TRUE)))

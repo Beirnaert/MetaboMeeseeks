@@ -20,7 +20,7 @@
 #'  
 #' @export
 
-QC.plots.peaks = function(XCMSobject, include.postfill.plots = FALSE, className = NULL){
+QC.plots.peaks = function(XCMSobject, include.postfill.plots = FALSE, className = NULL, plottitle = NULL){
     
     if(ncol(XCMSobject@phenoData) > 1 & is.null(className)){
         print(head(XCMSobject@phenoData))
@@ -70,6 +70,9 @@ QC.plots.peaks = function(XCMSobject, include.postfill.plots = FALSE, className 
           geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2) + 
           theme_bw() +   
           scale_y_continuous(name="Mean number of peaks (± sd) (no peak filling)")  
+    if(!is.null(plottitle)){
+        g1 <- g1 + ggtitle(plottitle)
+    }
     print(g1)
     
     if(include.postfill.plots){
@@ -82,6 +85,9 @@ QC.plots.peaks = function(XCMSobject, include.postfill.plots = FALSE, className 
               geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2) + 
               theme_bw() +   
               scale_y_continuous(name="Mean number of peaks (± sd) (with peak filling)")  
+        if(!is.null(plottitle)){
+            g2 <- g2 + ggtitle(plottitle)
+        }
         print(g2)
     }
 
