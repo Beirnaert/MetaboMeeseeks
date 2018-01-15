@@ -93,7 +93,8 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
                  show.legend = FALSE) 
         
     if(!is.null(plottitle)){
-        gg1 <- gg1 + ggtitle(plottitle)
+        gg1 <- gg1 + ggtitle(plottitle) +
+            theme(plot.title = element_text(hjust = 0.5))
     }
     print(gg1)
     
@@ -113,7 +114,8 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
         geom_hline(color = "#e6e6e6", yintercept = 0, size= 0.7)
     # axis ticks per 20, median RSD after legend
     if(!is.null(plottitle)){
-        gg2 <- gg2 + ggtitle(plottitle)
+        gg2 <- gg2 + ggtitle(plottitle) +
+            theme(plot.title = element_text(hjust = 0.5))
     }
     print(gg2)
     
@@ -127,7 +129,8 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
         geom_text(data= npeaks.df, aes(x=classes, y=0, label=Npeaks),colour = "red") +
         theme_bw()
     if(!is.null(plottitle)){
-        gg3 <- gg3 + ggtitle(plottitle)
+        gg3 <- gg3 + ggtitle(plottitle) +
+            theme(plot.title = element_text(hjust = 0.5))
     }
     print(gg3)
     
