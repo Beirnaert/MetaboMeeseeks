@@ -5,7 +5,8 @@
 \title{QC plots for feature data}
 \usage{
 QC.plots.features(FeatureMatrix, XCMSobject, className = NULL,
-  NA.numeric.limit = NULL)
+  NA.numeric.limit = NULL, plottitle = NULL, BOI.varname = NULL,
+  BOI = NULL)
 }
 \arguments{
 \item{FeatureMatrix}{the matrix of Features (obtained by using the xcms::groupval function). Matrix has to have columns for features and rows for samples.}
@@ -15,6 +16,12 @@ QC.plots.features(FeatureMatrix, XCMSobject, className = NULL,
 \item{className}{In case there are multiple class definitions in the XCMSobject@phenoData object, the one of interest can be specified here. If not the code will ask.}
 
 \item{NA.numeric.limit}{If missing values are not indicated as NA but with a numeric value like 0, supply the numerical value under which values are considered missing.}
+
+\item{plottitle}{(Optional) Plot title}
+
+\item{BOI.varname}{(Optional) In case the RSD's need only be calculated for a specific subset of batches, provide the variable name that contains batch information here}
+
+\item{BOI}{(Optinal) The name of the batch of interest. BOI.varname has to be supplied as well}
 }
 \value{
 several QC plots

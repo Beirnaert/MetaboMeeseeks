@@ -5,7 +5,8 @@
 \title{Easy Cross-Validated Random Forest}
 \usage{
 Meeseeks.RF(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10,
-  nSims = 20, plot.out = TRUE, nCPU = -1, plotcol = NULL)
+  nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1,
+  plotcol = NULL)
 }
 \arguments{
 \item{FeatureMatrix}{The matrix of Features (obtained by using the xcms::groupval function). Matrix has to have columns for features and rows for samples.}
@@ -19,6 +20,8 @@ Meeseeks.RF(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10,
 \item{nSims}{Number of simulations (every simulation has different folds)}
 
 \item{plot.out}{Whether to print the ROC curve (default is TRUE).}
+
+\item{plot.type}{Type of plot ourput. "ROC" for receiver operacter characteristic (default) or "PR" for precision-recall.}
 
 \item{nCPU}{The number of cores to use (default is the maximum amount available minus 2)}
 

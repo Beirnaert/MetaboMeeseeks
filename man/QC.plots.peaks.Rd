@@ -4,7 +4,8 @@
 \alias{QC.plots.peaks}
 \title{QC plots for peak data}
 \usage{
-QC.plots.peaks(XCMSobject, include.postfill.plots = FALSE, className = NULL)
+QC.plots.peaks(XCMSobject, include.postfill.plots = FALSE, className = NULL,
+  plottitle = NULL)
 }
 \arguments{
 \item{XCMSobject}{An xcmsSet object}

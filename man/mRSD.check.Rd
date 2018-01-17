@@ -4,17 +4,21 @@
 \alias{mRSD.check}
 \title{mRSD checker}
 \usage{
-mRSD.check(DataMatrix, subclasses.list = NULL, RSD.threshold = 0.4,
-  ignore.missing.values = TRUE, Na.or.numeric.limit = NA, labels = NULL,
-  feature.orientation = "columns", groups.ok.threshold = 1,
-  include.RSD.matrix = FALSE)
+mRSD.check(DataMatrix, subclasses = NULL, labels = NULL,
+  RSD.threshold = 0.4, ignore.missing.values = TRUE,
+  Na.or.numeric.limit = NA, feature.orientation = "columns",
+  groups.ok.threshold = 1, include.RSD.matrix = FALSE)
 }
 \arguments{
 \item{DataMatrix}{A matrix with feature groups as columns and samples for rows.}
 
-\item{subclasses.list}{A list with either A) in each list entry a number of integers or 
-numerics corresponding to the rows that form the subclasses to be checked, or B) in each 
-list entry characters or factors corresponding to those found in the 'labels' attribute.}
+\item{subclasses}{A vector with characters or factors corresponding to those found in the 'labels' attribute. 
+This can also be a list of vectors in case multiple variables are supplied in the labels parameter.}
+
+\item{labels}{A vector of labels which can be used to group the samples together in subclasses. 
+This attribute is necessary if 'subclasses' is provided. Note this can also be a list in case 2 variables need to 
+be combined for the calculation (for example Batch x sample group). The length of 'labels', or each element in the list
+has to be the same as the number of rows in the DataMatrix.}
 
 \item{RSD.threshold}{The maximal RSD value (sd/mean) allowed in a single subclass.}
 
@@ -24,9 +28,6 @@ with no missing values will produce a numeric RSD.}
 
 \item{Na.or.numeric.limit}{Define the missing values, this can be set to 'NA' or to a 
 numerical value in which case all values below this value will be deemed missing.}
-
-\item{labels}{A vector of labels which can be used to group the samples together in subclasses. 
-This attribute is necessary if 'subclasses.list' consists of character or factor entries.}
 
 \item{feature.orientation}{Indicates whether the features can be found in the columns (default) or 
 in the rows. With the default setting every row corresponds to a sample, and every column to a feature/group}
