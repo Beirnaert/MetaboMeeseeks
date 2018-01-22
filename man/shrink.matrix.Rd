@@ -48,9 +48,15 @@ Shrunken.matrix = shrink.matrix(DataMatrix = testmatrix,
 
 #Note that the exact same result can be obtained with the following
 library(matrixStats)
-Shrunken.matrix2 = rbind(matrixStats::colMedians(testmatrix, rows = which(sample.groups == subclasses[[1]]), na.rm = TRUE), 
-                         matrixStats::colMedians(testmatrix, rows = which(sample.groups == subclasses[[2]]), na.rm = TRUE),
-                         matrixStats::colMedians(testmatrix, rows = which(sample.groups == subclasses[[3]]), na.rm = TRUE))
+Shrunken.matrix2 = rbind(matrixStats::colMedians(testmatrix, 
+                                                 rows = which(sample.groups == subclasses[[1]]), 
+                                                 na.rm = TRUE), 
+                         matrixStats::colMedians(testmatrix, 
+                                                 rows = which(sample.groups == subclasses[[2]]), 
+                                                 na.rm = TRUE),
+                         matrixStats::colMedians(testmatrix, 
+                                                 rows = which(sample.groups == subclasses[[3]]), 
+                                                 na.rm = TRUE))
 
 }
 \author{

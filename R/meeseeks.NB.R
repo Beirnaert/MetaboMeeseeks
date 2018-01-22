@@ -21,6 +21,15 @@
 #' @examples
 #'
 #' @importFrom foreach %dopar%
+#' @importFrom doSNOW registerDoSNOW
+#' @importFrom foreach foreach
+#' @importFrom caret createFolds
+#' @importFrom e1071 naiveBayes
+#' @importFrom stats predict
+#' @importFrom data.table rbindlist
+#' @importFrom ROCR prediction performance
+#' 
+#' @import parallel
 #'  
 #' @export
 Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, nCPU = -1, plotcol = NULL){

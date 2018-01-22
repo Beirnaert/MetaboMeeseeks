@@ -19,6 +19,8 @@
 #' 
 #' 
 #' @export
+#' 
+#' @import mixOmics
 PLSDAwrapper <- function(plsdaMatrix, classLabels, plotMarks = NULL, plotOutputs = FALSE){
     
     if(length(classLabels) != nrow(plsdaMatrix)){

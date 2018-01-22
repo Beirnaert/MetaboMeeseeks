@@ -23,6 +23,9 @@
 #' @import ggplot2
 #'  
 #' @export
+#' 
+#' @importFrom stringr str_count
+#' 
 QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.numeric.limit = NULL, plottitle = NULL, BOI.varname = NULL, BOI = NULL){
  
     if(ncol(XCMSobject@phenoData) > 1 & is.null(className)){

@@ -16,6 +16,10 @@
 #' 
 #' 
 #' @export
+#' 
+#' @importFrom purrr map2
+#' 
+#' 
 RTcorrChecker = function(RTcorr1.xcmsGrouped = test.rtcorrs.grouped[[1]] , 
                          RTcorr2.xcmsGrouped = test.rtcorrs.obiwarp.grouped[[1]], 
                          plotTitle.method1 = "Loess.correction, span = 1", 

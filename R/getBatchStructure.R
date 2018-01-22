@@ -12,13 +12,15 @@
 #' 
 #' 
 #' @export
+#' 
+#' @importFrom purrr map
 getBatchStructure = function(xcmsSets.Post.batchSplit){
     
     BatchProcessingStructure = data.frame(MultiBatchData = 1:length(xcmsSets.Post.batchSplit), nBatches = NA)
     BatchProcessingStructure$nBatches = as.numeric(
         unlist(
-            map(.x = xcmsSets.Post.batchSplit,
-                .f = ~ length(.x)
+            purrr::map(.x = xcmsSets.Post.batchSplit,
+                       .f = ~ length(.x)
             )
         )
     )

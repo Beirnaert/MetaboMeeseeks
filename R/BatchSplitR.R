@@ -17,7 +17,6 @@
 #'
 #' @examples
 #' 
-#' @importFrom magrittr %>%
 #' 
 #' @export
 BatchSplitR <- function(xcmsObject, BatchClassLabel = NULL, BatchNames = NULL ){
@@ -50,7 +49,7 @@ BatchSplitR <- function(xcmsObject, BatchClassLabel = NULL, BatchNames = NULL ){
         splitObject@groupidx = list()
         phenoDat = xcmsObject@phenoData[split.samples,]
         for(j in 1:ncol(phenoDat)){
-            phenoDat[,j] = phenoDat[,j] %>% as.character() %>% as.factor
+            phenoDat[,j] = as.factor(as.character(phenoDat[,j]))
         }
         splitObject@phenoData = phenoDat
         splitObject@rt$raw = xcmsObject@rt$corrected[split.samples]
@@ -68,3 +67,4 @@ BatchSplitR <- function(xcmsObject, BatchClassLabel = NULL, BatchNames = NULL ){
     return(xcmsObject.split)
     
 }
+

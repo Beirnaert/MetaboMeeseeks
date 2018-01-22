@@ -37,11 +37,20 @@
 #' 
 #' #Note that the exact same result can be obtained with the following
 #' library(matrixStats)
-#' Shrunken.matrix2 = rbind(matrixStats::colMedians(testmatrix, rows = which(sample.groups == subclasses[[1]]), na.rm = TRUE), 
-#'                          matrixStats::colMedians(testmatrix, rows = which(sample.groups == subclasses[[2]]), na.rm = TRUE),
-#'                          matrixStats::colMedians(testmatrix, rows = which(sample.groups == subclasses[[3]]), na.rm = TRUE))
+#' Shrunken.matrix2 = rbind(matrixStats::colMedians(testmatrix, 
+#'                                                  rows = which(sample.groups == subclasses[[1]]), 
+#'                                                  na.rm = TRUE), 
+#'                          matrixStats::colMedians(testmatrix, 
+#'                                                  rows = which(sample.groups == subclasses[[2]]), 
+#'                                                  na.rm = TRUE),
+#'                          matrixStats::colMedians(testmatrix, 
+#'                                                  rows = which(sample.groups == subclasses[[3]]), 
+#'                                                  na.rm = TRUE))
 #' 
 #' @export
+#' 
+#' @import matrixStats
+#' 
 shrink.matrix = function(DataMatrix, subclasses.list = NULL, ignore.missing.values = TRUE, labels = NULL, feature.orientation = "columns", metric = "median"){
     
     # checks

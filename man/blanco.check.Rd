@@ -43,22 +43,7 @@ function only lets groups of samples/subclasses pass for which at least one of t
 subclasses has a median value x times (10 default) larger than the maximal blanco value
 }
 \examples{
-# this is an example for 3 meaningless spectra
-lengths_of_spectra <- c(100,150,120)
-measurement_distance <- 0.01
-starting_ppm_values <- c(8.7, 9.0, 9.0)
-spectra <- list()
-ppm_values <- list()
-for (k in 1:3) {
-    spectra[[k]] <- runif(lengths_of_spectra[k], min = 0, max = 10)
-    
-    # note the minus sign in the 'by' statement
-    ppm_values[[k]] <- seq(from = starting_ppm_values[k], by = -measurement_distance, 
-                           length.out = lengths_of_spectra[k])  
-}
-new.Data <- BuildRawDataMatrix(spectrum.list = spectra, ppm.list = ppm_values)
-spectraMatrix <- new.Data$DataMatrix
-ppmMatrix <- new.Data$ppmMatrix
+
 
 }
 \author{
