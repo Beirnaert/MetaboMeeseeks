@@ -26,9 +26,9 @@ data.matrix <- matrix( stats::runif(n=nFeatures*nSamples, min=0,max=100),
 ncol = nFeatures, nrow = nSamples)
 
 response <- c( rep(0,nSamples/2), rep(1,nSamples/2) )
-p_values <- relevant.features.p(datamatrix = data.matrix, responsevector = 
+p_values <- relevant.features.p.extended(datamatrix = data.matrix, responsevector = 
 response, p.adj = 'none')
-p_values_adjusted <- relevant.features.p( datamatrix = data.matrix, 
+p_values_adjusted <- relevant.features.p.extended( datamatrix = data.matrix, 
 responsevector = response, p.adj = 'bonferroni')
 
 }

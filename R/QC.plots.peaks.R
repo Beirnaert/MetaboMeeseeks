@@ -17,6 +17,8 @@
 #'
 #'
 #' @import ggplot2
+#' @importFrom utils head
+#' @importFrom stats sd
 #'  
 #' @export
 
@@ -69,7 +71,7 @@ QC.plots.peaks = function(XCMSobject, include.postfill.plots = FALSE, className 
           geom_bar(position="dodge", stat="identity", width = 0.6,color="black", fill = "grey") + 
           geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2) + 
           theme_bw() +   
-          scale_y_continuous(name="Mean number of peaks (± sd) (no peak filling)")  
+          scale_y_continuous(name="Mean number of peaks (+/- sd) (no peak filling)")  
     if(!is.null(plottitle)){
         g1 <- g1 + ggtitle(plottitle) +
             theme(plot.title = element_text(hjust = 0.5))
@@ -85,7 +87,7 @@ QC.plots.peaks = function(XCMSobject, include.postfill.plots = FALSE, className 
               geom_bar(position="dodge", stat="identity", width = 0.6,color="black", fill = "grey") + 
               geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2) + 
               theme_bw() +   
-              scale_y_continuous(name="Mean number of peaks (± sd) (with peak filling)")  
+              scale_y_continuous(name="Mean number of peaks (+/- sd) (with peak filling)")  
         if(!is.null(plottitle)){
             g2 <- g2 + ggtitle(plottitle) +
                 theme(plot.title = element_text(hjust = 0.5))

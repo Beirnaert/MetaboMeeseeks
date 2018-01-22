@@ -25,6 +25,8 @@
 #' @export
 #' 
 #' @importFrom stringr str_count
+#' @importFrom utils head
+#' @importFrom matrixStats rowMedians
 #' 
 QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.numeric.limit = NULL, plottitle = NULL, BOI.varname = NULL, BOI = NULL){
  

@@ -33,6 +33,8 @@
 #'
 #' @examples
 #' 
+#' @importFrom stats na.omit
+#' 
 #' @export
 mRSD.check = function(DataMatrix, subclasses = NULL,  labels = NULL, RSD.threshold = 0.4,ignore.missing.values = TRUE, Na.or.numeric.limit = NA, feature.orientation = "columns", groups.ok.threshold = 1, include.RSD.matrix = FALSE)    {
     

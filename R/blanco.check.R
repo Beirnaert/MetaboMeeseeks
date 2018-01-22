@@ -33,6 +33,7 @@
 #' @export
 #' 
 #' @importFrom matrixStats colMaxs
+#' @importFrom stats median na.omit
 #' 
 #' 
 blanco.check = function(DataMatrix, subclasses.list = NULL, blanco.entry = NULL, blanco.data = NULL, Blanco.multiplier = 10,ignore.missing.values = TRUE, labels = NULL, feature.orientation = "columns", groups.ok.threshold = 1){

@@ -22,6 +22,15 @@
 #' @examples
 #' 
 #' @importFrom foreach %dopar% foreach
+#' @importFrom parallel detectCores makeCluster
+#' @importFrom doSNOW registerDoSNOW
+#' @importFrom CAMERA xsAnnotate groupFWHM findIsotopesWithValidation
+#' @importFrom data.table rbindlist
+#' @importFrom grDevices hcl
+#' @importFrom graphics image
+#' @importFrom matrixStats colMins colMaxs
+#' @importFrom utils setTxtProgressBar txtProgressBar
+#' @import ggplot2
 #' 
 #' @export
 #' 
@@ -53,8 +62,8 @@ CAMERA.accumulator = function(XCMS.object, polarity = NULL, perfwhm = 0.6, ppm_t
     performanceList <- list()
     parCounter <- NULL
     print("Running CAMERA iterations.")
-    pb <- txtProgressBar(max=nCombos, style=3)
-    progress <- function(n) setTxtProgressBar(pb, n)
+    pb <- utils::txtProgressBar(max=nCombos, style=3)
+    progress <- function(n) utils::setTxtProgressBar(pb, n)
     opts <- list(progress=progress)
     
     # divide the number of runs for each core
@@ -62,9 +71,9 @@ CAMERA.accumulator = function(XCMS.object, polarity = NULL, perfwhm = 0.6, ppm_t
     CAMERA.iters <- foreach::foreach(parCounter = 1:nCombos, .options.snow=opts, .inorder = TRUE, .packages = c("CAMERA")) %dopar%
     {
         
-        an_neg <- xsAnnotate(XCMS.object, polarity = polarity)
-        an_neg2 <- groupFWHM(an_neg, perfwhm = Combos$perfwhm[parCounter]) # group peaks by retention time
-        an_neg3 <- findIsotopesWithValidation(object = an_neg2, ppm = Combos$ppm_threshold[parCounter] * Combos$ppm_threshold.multiplier[parCounter], mzabs = Combos$mzabs[parCounter], intval = Combos$intval[parCounter] , maxcharge = Combos$maxcharge[parCounter]) # annotate isotopic peaks
+        an_neg <- CAMERA::xsAnnotate(XCMS.object, polarity = polarity)
+        an_neg2 <- CAMERA::groupFWHM(an_neg, perfwhm = Combos$perfwhm[parCounter]) # group peaks by retention time
+        an_neg3 <- CAMERA::findIsotopesWithValidation(object = an_neg2, ppm = Combos$ppm_threshold[parCounter] * Combos$ppm_threshold.multiplier[parCounter], mzabs = Combos$mzabs[parCounter], intval = Combos$intval[parCounter] , maxcharge = Combos$maxcharge[parCounter]) # annotate isotopic peaks
         
         Npseudospec <- length(an_neg2@pspectra)
         Nisotopes <- nrow(an_neg3@isoID)
@@ -109,7 +118,7 @@ CAMERA.accumulator = function(XCMS.object, polarity = NULL, perfwhm = 0.6, ppm_t
     plotcols <- grDevices::hcl(h = angles.col, l = 65, c = 120)[1:nLevels]
     
     
-    image(iso.groups, zlim = c(0.5,max(iso.groups)+1), col = plotcols, breaks = 0.5+seq(0,ceiling(max(iso.groups))))
+    graphics::image(iso.groups, zlim = c(0.5,max(iso.groups)+1), col = plotcols, breaks = 0.5+seq(0,ceiling(max(iso.groups))))
     
     # The profile plot
     

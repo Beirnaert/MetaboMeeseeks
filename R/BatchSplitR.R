@@ -15,6 +15,8 @@
 #'
 #' @author Charlie Beirnaert, \email{charlie.beirnaert@@uantwerpen.be}
 #'
+#' @importFrom utils head
+#'  
 #' @examples
 #' 
 #' 

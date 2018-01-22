@@ -18,6 +18,7 @@
 #' @export
 #' 
 #' @importFrom purrr map2
+#' @importFrom stats quantile
 #' 
 #' 
 RTcorrChecker = function(RTcorr1.xcmsGrouped = test.rtcorrs.grouped[[1]] , 

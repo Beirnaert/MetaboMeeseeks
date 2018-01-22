@@ -25,7 +25,7 @@
 #' @importFrom foreach foreach
 #' @importFrom caret createFolds
 #' @importFrom e1071 naiveBayes
-#' @importFrom stats predict
+#' @importFrom stats predict quantile complete.cases
 #' @importFrom data.table rbindlist
 #' @importFrom ROCR prediction performance
 #' 
