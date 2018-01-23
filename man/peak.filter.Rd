@@ -10,23 +10,19 @@ peak.filter(XCMSobject, min.RT.width = NULL, max.RT.width = NULL,
 \arguments{
 \item{XCMSobject}{An xcmsSet object after peak picking.}
 
-\item{min.RT.diff}{The minimal retentiuon time width a peak must have}
+\item{min.RT.width}{The minimal retentiuon time width a peak must have}
 
-\item{max.RT.diff}{The maximal retention time width a peak may have}
+\item{max.RT.width}{The maximal retention time width a peak may have}
 
-\item{max.ppm.diff}{The maximal allowed ppm width for a single peak}
+\item{max.ppm.width}{The maximal allowed ppm width for a single peak}
 
-\item{gauss.fail.filter}{Whether to filter out}
+\item{gauss.fail.threshold}{The threshold for the egauss XCMS parameter, below which the peak is rejected.}
 }
 \value{
 filtered xcmsSet object
 }
 \description{
 After peak picking this function filters out bad groups/features.
-}
-\examples{
-
- 
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

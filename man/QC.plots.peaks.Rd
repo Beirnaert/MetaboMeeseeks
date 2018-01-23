@@ -13,16 +13,14 @@ QC.plots.peaks(XCMSobject, include.postfill.plots = FALSE, className = NULL,
 \item{include.postfill.plots}{Whether to include the peaks added after filling (only if available)}
 
 \item{className}{In case there are multiple class definitions in the XCMSobject@phenoData object, the one of interest can be specified here. If not the code will ask.}
+
+\item{plottitle}{(optinal) The title to place above the plot(s).}
 }
 \value{
 a QC plot for nr of peaks
 }
 \description{
 Mean number of peaks are plotted for the peak data
-}
-\examples{
-
-
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

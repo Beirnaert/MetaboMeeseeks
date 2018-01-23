@@ -24,10 +24,6 @@ BatchProcessingStructure A data frame with the list structure (quantifies the li
 \description{
 Restructure BatchProcessing and calculate combined results
 }
-\examples{
-
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

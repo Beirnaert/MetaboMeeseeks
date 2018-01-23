@@ -29,10 +29,6 @@ several QC plots
 \description{
 Mean number of peaks are plotted for the peak data
 }
-\examples{
-
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

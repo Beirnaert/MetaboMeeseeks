@@ -13,6 +13,8 @@ PLSDAwrapper(plsdaMatrix, classLabels, plotMarks = NULL,
 \item{classLabels}{The class labels. The length must correpsond to the amount of rows in the plsdaMatrix}
 
 \item{plotMarks}{(optional) A character vector with plot labels (same length as classLabels).}
+
+\item{plotOutputs}{(logical) Whether to plot the PCA scores and loadings.}
 }
 \value{
 varimportance.PLSDA The vector with variable importances
@@ -21,10 +23,6 @@ varimportance.PLSDA The vector with variable importances
 binnen batch analyse 
 gebruik obiwarp om te weten hoe je de features van batch 1 en 2 aan elkaar moet plakken
 doe dan analyse loess, PLSDA van batch 1 en 2 afzonderlijk. Giet alles in data frame (significant, fold change)
-}
-\examples{
-
-
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

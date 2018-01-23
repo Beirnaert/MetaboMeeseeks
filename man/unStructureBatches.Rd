@@ -17,10 +17,6 @@ unStructuredBatchList a list with every individual batch in a list element
 \description{
 obtain all datasets in a single list for easy processing with purrr
 }
-\examples{
-
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

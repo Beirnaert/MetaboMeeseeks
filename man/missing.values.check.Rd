@@ -37,10 +37,6 @@ for proportion of missing values.
 function only lets groups of samples/subclasses pass which have a proportion of
 missing values less than the allowed threshold
 }
-\examples{
-
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

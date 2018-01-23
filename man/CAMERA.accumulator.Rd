@@ -29,14 +29,8 @@ CAMERA.accumulator(XCMS.object, polarity = NULL, perfwhm = 0.6,
 
 \item{Standards.list}{Yet to implement}
 }
-\value{
-
-}
 \description{
 Function to accumulate CAMERA results for all combinations of given parameters.
-}
-\examples{
-
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

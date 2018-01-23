@@ -42,10 +42,6 @@ blanco.ok A vector with the indices of groups/features which passed the blanco f
 function only lets groups of samples/subclasses pass for which at least one of the 
 subclasses has a median value x times (10 default) larger than the maximal blanco value
 }
-\examples{
-
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

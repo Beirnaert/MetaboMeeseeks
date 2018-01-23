@@ -17,8 +17,6 @@
 #'
 #' @importFrom utils head
 #'  
-#' @examples
-#' 
 #' 
 #' @export
 BatchSplitR <- function(xcmsObject, BatchClassLabel = NULL, BatchNames = NULL ){

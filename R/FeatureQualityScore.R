@@ -12,8 +12,6 @@
 #' 
 #' @author Charlie Beirnaert, \email{charlie.beirnaert@@uantwerpen.be}
 #'
-#' @examples
-#'
 #'  
 #' @export
 FeatureQualityScore = function(XCMSobject, indices.to.keep = NULL){

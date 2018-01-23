@@ -17,9 +17,6 @@ Function to check the peak filling and grouping. Every group gets a score for th
 For example, filled peaks cannot have intensities considerably larger than the already present peaks. 
 This violates the assuption that these peaks are missed in peak detection because they are smaller.
 }
-\examples{
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

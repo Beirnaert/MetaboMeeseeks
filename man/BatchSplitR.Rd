@@ -21,10 +21,6 @@ binnen batch analyse
 gebruik obiwarp om te weten hoe je de features van batch 1 en 2 aan elkaar moet plakken
 doe dan analyse loess, PLSDA van batch 1 en 2 afzonderlijk. Giet alles in data frame (significant, fold change)
 }
-\examples{
-
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

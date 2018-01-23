@@ -2,19 +2,12 @@
 % Please edit documentation in R/glog.R
 \name{glog}
 \alias{glog}
-\title{generalized logarithm scaling}
+\title{To DO generalized logarithm scaling}
 \usage{
 glog()
 }
-\value{
-
-}
 \description{
 transform the data to glog.
-}
-\examples{
-
- 
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

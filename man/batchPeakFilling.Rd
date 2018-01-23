@@ -17,10 +17,6 @@ xcmsObject A peak filled xcms object
 \description{
 Function to do peak filling (xcms) with restored RT values
 }
-\examples{
-
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

@@ -24,10 +24,6 @@ foldChanges A vector with the fold changes
 \description{
 Filter out isotopes based on the PUTMEDID concept
 }
-\examples{
-
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

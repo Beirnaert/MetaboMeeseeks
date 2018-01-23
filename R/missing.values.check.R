@@ -23,7 +23,6 @@
 #'
 #' @author Charlie Beirnaert, \email{charlie.beirnaert@@uantwerpen.be}
 #'
-#' @examples
 #'
 #' 
 #' @export

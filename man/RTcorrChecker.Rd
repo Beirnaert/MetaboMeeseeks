@@ -2,10 +2,9 @@
 % Please edit documentation in R/RTcorrChecker.R
 \name{RTcorrChecker}
 \alias{RTcorrChecker}
-\title{NOT FINISHED!!!!!! Function to compare different RT corrections by looking at the most shifted peaks from in method}
+\title{NOT FINISHED!!!!!! Function to compare different RT corrections by looking at the most shifted peaks from a specific method}
 \usage{
-RTcorrChecker(RTcorr1.xcmsGrouped = test.rtcorrs.grouped[[1]],
-  RTcorr2.xcmsGrouped = test.rtcorrs.obiwarp.grouped[[1]],
+RTcorrChecker(RTcorr1.xcmsGrouped = NULL, RTcorr2.xcmsGrouped = NULL,
   plotTitle.method1 = "Loess.correction, span = 1",
   plotTitle.method2 = "Obiwarp correction, respons = 10",
   RTdiff.cutoff.value = NULL, RTdiff.cutoff.quantile = NULL)
@@ -14,16 +13,17 @@ RTcorrChecker(RTcorr1.xcmsGrouped = test.rtcorrs.grouped[[1]],
 \item{RTcorr1.xcmsGrouped}{XCMS object of first RT correction method (post RT correction and subsequent grouping)}
 
 \item{RTcorr2.xcmsGrouped}{XCMS object of second RT correction method (post RT correction and subsequent grouping)}
-}
-\value{
 
+\item{plotTitle.method1}{To Do}
+
+\item{plotTitle.method2}{To Do}
+
+\item{RTdiff.cutoff.value}{To Do}
+
+\item{RTdiff.cutoff.quantile}{To Do}
 }
 \description{
-Filter out isotopes based on the PUTMEDID concept
-}
-\examples{
-
-
+NOT FINISHED!!!!!! Function to compare different RT corrections by looking at the most shifted peaks from a specific method
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

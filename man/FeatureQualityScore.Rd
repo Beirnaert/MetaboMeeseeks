@@ -17,10 +17,6 @@ A vector with QC scores (between 0 and 1)
 \description{
 Calculate the feature quality score based on the presence of non failed gaussian fits.
 }
-\examples{
-
- 
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

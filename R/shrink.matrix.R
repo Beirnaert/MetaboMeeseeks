@@ -104,7 +104,7 @@ shrink.matrix = function(DataMatrix, subclasses.list = NULL, ignore.missing.valu
             Shrunken.matrix[subCL,] = matrixStats::colMedians(DataMatrix, rows = subclasses.list[[subCL]], na.rm = ignore.missing.values)
         }
         if(metric == "mean"){
-            Shrunken.matrix[subCL,] = colMeans(DataMatrix, rows = subclasses.list[[subCL]], na.rm = ignore.missing.values)
+            Shrunken.matrix[subCL,] = colMeans(DataMatrix[subclasses.list[[subCL]],], na.rm = ignore.missing.values)
         }
         if(metric == "min"){
             Shrunken.matrix[subCL,] = matrixStats::colMins(DataMatrix, rows = subclasses.list[[subCL]], na.rm = ignore.missing.values)

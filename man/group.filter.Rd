@@ -21,9 +21,6 @@ group.filter(XCMSobject, max.RT.width = NULL, max.ppm.diff = NULL,
 
 \item{thresholds.to.pass}{The number of thresholds to pass (default is all)}
 }
-\value{
-
-}
 \description{
 After grouping and peak filling, this function filters out bad groups/features. 
 There is the posibility of supplying groups of interest in which case the. 
@@ -32,10 +29,6 @@ of group properties.
 param ToDo classVector (required if ClassesOfInterest provided) vector with classlabels.
 param ToDo.......WithinGroupsOfInterest (default is FALSE), Option to choose to do the 
 calculations within class instead of over the entire group/feature
-}
-\examples{
-
- 
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

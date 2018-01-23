@@ -19,7 +19,6 @@
 #'
 #' @author Charlie Beirnaert, \email{charlie.beirnaert@@uantwerpen.be}
 #'
-#' @examples
 #'
 #' @importFrom foreach %dopar%
 #' @importFrom doSNOW registerDoSNOW
@@ -245,9 +244,9 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
     colnames(random_diag_line)=c("x","y")
     
     pp <- ggplot() + 
-        geom_line(data = RC, aes(ROCx, ROCy,colour=plotcol)) + 
-        geom_ribbon(data = RC, aes(x=ROCx, ymin=lower, ymax=upper, fill = plotcol), alpha=0.2) +
-        geom_line(data=random_diag_line, aes(x=x,y=y),colour="black") +
+        geom_line(data = RC, aes(x = ~ROCx, y = ~ROCy, colour = ~plotcol)) + 
+        geom_ribbon(data = RC, aes(x = ~ROCx, ymin = ~lower, ymax = ~upper, fill = ~plotcol), alpha=0.2) +
+        geom_line(data=random_diag_line, aes(x = ~x, y = ~y),colour="black") +
         guides(colour=guide_legend(title="Method"), fill = guide_legend(title="95% interval"))+
         xlab("False Positive Rate (1-specificity)") +
         ylab("True Positive Rate (Sensitivity)") +

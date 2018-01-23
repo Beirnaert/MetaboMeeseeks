@@ -17,13 +17,11 @@
 #' @param thresholds.to.pass The number of thresholds to pass (default is all)
 #'  
 #' 
-#' @return 
 #' 
 #' 
 #'
 #' @author Charlie Beirnaert, \email{charlie.beirnaert@@uantwerpen.be}
 #'
-#' @examples
 #'
 #'  
 #' @export

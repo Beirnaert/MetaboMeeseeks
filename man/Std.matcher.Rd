@@ -34,10 +34,6 @@ The first are the matched peaks/groups. The second the ppm differences. The thir
 \description{
 This function searces for XCMS objects (peaks, groups) that match with the provided standards (optionally with isotopic profiles).
 }
-\examples{
-
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

@@ -31,7 +31,6 @@
 #'
 #' @author Charlie Beirnaert, \email{charlie.beirnaert@@uantwerpen.be}
 #'
-#' @examples
 #' 
 #' @importFrom stats na.omit
 #' 

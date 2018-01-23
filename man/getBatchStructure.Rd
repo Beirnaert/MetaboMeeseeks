@@ -15,10 +15,6 @@ BatchProcessingStructure A data frame with the list structure (quantifies the li
 \description{
 Get the Batch processing Structure. Necessary for merging batches again after analysis
 }
-\examples{
-
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

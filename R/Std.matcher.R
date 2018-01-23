@@ -20,8 +20,6 @@
 #'
 #' @author Charlie Beirnaert, \email{charlie.beirnaert@@uantwerpen.be}
 #'
-#' @examples
-#'
 #'
 #' @export
 Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL, max.ppm = NULL, max.mz = NULL, max.RT.narrow = NULL, max.RT.wide = NULL, accept.ppm.diff = NULL){
@@ -255,12 +253,12 @@ Std.matcher = function(Standards.mz, Standards.RT, Data, Standards.ratios = NULL
                     all.ratio.int$sample = as.factor(all.ratio.int$sample)
                     
                     plot.output[[mt2]] <- ggplot() + 
-                        geom_line(data = subset(all.ratio.int,IR.check ==1), 
-                                  aes(x=ratio, y = intensity, colour = sample)) + 
-                        geom_point(data = subset(all.ratio.int,IR.check ==1), 
-                                   aes(x=ratio, y = intensity, colour = sample))+
-                        geom_point(data = subset(all.ratio.int,IR.check ==0), 
-                                   aes(x=ratio, y = intensity, colour = sample), shape = 4)+
+                        geom_line(data = subset(all.ratio.int, ~IR.check ==1), 
+                                  aes(x = ~ratio, y = ~intensity, colour = ~sample)) + 
+                        geom_point(data = subset(all.ratio.int, ~IR.check ==1), 
+                                   aes(x = ~ratio, y = ~intensity, colour = ~sample))+
+                        geom_point(data = subset(all.ratio.int, ~IR.check ==0), 
+                                   aes(x = ~ratio, y = ~intensity, colour = ~sample), shape = 4)+
                         scale_x_reverse()+
                         theme_bw() +
                         ggtitle(paste("Standard ",as.character(mt2))) +

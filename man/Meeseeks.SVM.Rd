@@ -33,9 +33,6 @@ A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with
 \description{
 This function quickly performs a cross-validated SVM classification on a data matrix.
 }
-\examples{
-
-}
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}
 }

@@ -9,15 +9,14 @@
 #' @return xcmsObject A peak filled xcms object
 #'
 #' @author Charlie Beirnaert, \email{charlie.beirnaert@@uantwerpen.be}
-#'
-#' @examples
 #' 
+#' @importFrom xcms fillPeaks
 #' 
 #' @export
 batchPeakFilling <- function(xcmsObject, unStructureBatchesObject){
     xcmsObject@rt$raw = unStructureBatchesObject@rt$Original_raw
     
-    xcmsObject.peakfilled = fillPeaks(xcmsObject)
+    xcmsObject.peakfilled = xcms::fillPeaks(xcmsObject)
     
     return(xcmsObject.peakfilled)
 }

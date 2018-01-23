@@ -8,6 +8,7 @@
 #' @param plsdaMatrix The matrix to be used inthe PLSDA
 #' @param classLabels The class labels. The length must correpsond to the amount of rows in the plsdaMatrix
 #' @param plotMarks (optional) A character vector with plot labels (same length as classLabels).
+#' @param plotOutputs (logical) Whether to plot the PCA scores and loadings.
 #' 
 #'   
 #' @return varimportance.PLSDA The vector with variable importances
@@ -15,7 +16,6 @@
 #'
 #' @author Charlie Beirnaert, \email{charlie.beirnaert@@uantwerpen.be}
 #'
-#' @examples
 #' 
 #' 
 #' @export
@@ -27,7 +27,7 @@ PLSDAwrapper <- function(plsdaMatrix, classLabels, plotMarks = NULL, plotOutputs
         stop("the number of classlabels is not equal to the amount of rows in the plsdaMatrix.")
     }
     
-    classLabels = classlabels[[part]][ classlabels[[part]] %in% unlist(subclasses)]
+    #classLabels = classlabels[[part]][ classlabels[[part]] %in% unlist(subclasses)]
     
     if(is.null(plotMarks)){
         plotMarks = classLabels
