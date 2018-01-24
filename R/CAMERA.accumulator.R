@@ -131,17 +131,17 @@ CAMERA.accumulator = function(XCMS.object, polarity = NULL, perfwhm = 0.6, ppm_t
     profiles.df.changing.from0 = data.frame(X = rep(CAMERA.iters$perfwhm, ncol(iso.groups[,changing.from0]) ), Y= as.numeric(iso.groups[,changing.from0]), group = as.numeric(matrix(rep(seq(1,ncol(iso.groups[,changing.from0])),nrow(CAMERA.iters)), ncol = ncol(iso.groups[,changing.from0]), nrow = nrow(CAMERA.iters), byrow = T)))
     profiles.df.changing.from_non0 = data.frame(X = rep(CAMERA.iters$perfwhm, ncol(iso.groups[,changing.from_non0]) ), Y= as.numeric(iso.groups[,changing.from_non0]), group = as.numeric(matrix(rep(seq(1,ncol(iso.groups[,changing.from_non0])),nrow(CAMERA.iters)), ncol = ncol(iso.groups[,changing.from_non0]), nrow = nrow(CAMERA.iters), byrow = T)))
     
-    ggplot(profiles.df.non.changing.iso, aes(x= ~X,y= ~Y, group = ~group, colour = ~group)) +
+    ggplot(profiles.df.non.changing.iso, aes(x= X,y= Y, group = group, colour = group)) +
         geom_line() + 
         theme_bw () + 
         ggtitle(paste("nr. of isotopoplogues = ",as.character(max(profiles.df.non.changing.iso$group)))) 
     
-    ggplot(profiles.df.changing.from0, aes(x= ~X,y= ~Y, group = ~group, colour = ~group)) +geom_line() +
+    ggplot(profiles.df.changing.from0, aes(x= X,y= Y, group = group, colour = group)) +geom_line() +
         geom_line() + 
         theme_bw () + 
         ggtitle(paste("nr. of isotopoplogues = ",as.character(max(profiles.df.changing.from0$group)))) 
     
-    ggplot(profiles.df.changing.from_non0, aes(x= ~X,y= ~Y, group = ~group, colour = ~group)) +geom_line() +
+    ggplot(profiles.df.changing.from_non0, aes(x= X,y= Y, group = group, colour = group)) +geom_line() +
         geom_line() + 
         theme_bw () + 
         ggtitle(paste("nr. of isotopoplogues = ",as.character(max(profiles.df.changing.from_non0$group)))) 

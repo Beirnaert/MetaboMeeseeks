@@ -4,11 +4,11 @@
 #'
 #'  
 #' @param FeatureMatrix the matrix of Features (obtained by using the xcms::groupval function). Matrix has to have columns for features and rows for samples. 
-#' @param XCMSobject An xcmsSet object
-#' @param className In case there are multiple class definitions in the XCMSobject@phenoData object, the one of interest can be specified here. If not the code will ask.
+#' @param classVector The vector of sample classes. 
+#' @param COI (optional) In case only a specific class is of interest.
 #' @param NA.numeric.limit If missing values are not indicated as NA but with a numeric value like 0, supply the numerical value under which values are considered missing.
 #' @param plottitle (Optional) Plot title 
-#' @param BOI.varname (Optional) In case the RSD's need only be calculated for a specific subset of batches, provide the variable name that contains batch information here
+#' @param BOI.vector (Optional) In case the RSD's need only be calculated for a specific subset of batches, provide the character/factor vector witch batches here (same length as the number of rows in FeatureMatrix).
 #' @param BOI (Optinal) The name of the batch of interest. BOI.varname has to be supplied as well
 #'  
 #' @return 
@@ -27,39 +27,45 @@
 #' @importFrom utils head
 #' @importFrom matrixStats rowMedians
 #' 
-QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.numeric.limit = NULL, plottitle = NULL, BOI.varname = NULL, BOI = NULL){
+QC.plots.features = function(FeatureMatrix, classVector, COI = NULL, NA.numeric.limit = NULL, plottitle = NULL, BOI.vector = NULL, BOI = NULL){
  
-    if(ncol(XCMSobject@phenoData) > 1 & is.null(className)){
-        print(head(XCMSobject@phenoData))
-        class <- readline(paste("Which of the following classes describes the individual groups: ",paste(colnames(XCMSobject@phenoData), collapse=" or ")))
-    } else if (ncol(XCMSobject@phenoData) > 1 & !is.null(className)){
-        if(className %in% colnames(XCMSobject@phenoData)){
-            class = className
-        } else{
-            warning("The 'className' variable does not match with any names in the XCMSobject@phenoData object.")
-            print(head(XCMSobject@phenoData))
-            class <- readline(paste("Which of the following classes describes the individual groups: ",paste(colnames(XCMSobject@phenoData), collapse=" or ")))
+    
+    if(length(classVector) != nrow(FeatureMatrix)){
+        stop("the length of classVector is not equal to the number of rows in FeatureMatrix.")
+    }
+    
+    if(!is.null(COI)){
+        if(COI %in% classVector){
+            FeatureMatrix = FeatureMatrix[classVector == COI,]
+            if(!is.null(BOI.vector)){
+                BOI.vector = BOI.vector[classVector == COI]
+            }
+            classVector = classVector[classVector == COI]
+        }else{
+            stop("COI is does not match with anything in classVector.")
         }
-    } else { # only 1 available class
-        class = colnames(XCMSobject@phenoData)
     }
     
     batchspecific = ""
-    if(!is.null(BOI.varname) & !is.null(BOI) & !is.na(BOI)){
-        batchspecific = paste(",", BOI, sep = " ")
-        FeatureMatrix = FeatureMatrix[XCMSobject@phenoData[BOI.varname][,1] ==  BOI ,]
-        XCMSobject@phenoData = XCMSobject@phenoData[XCMSobject@phenoData[BOI.varname][,1] ==  BOI,]
+    if(!is.null(BOI.vector) & !is.null(BOI) ){
+        if(length(BOI.vector) == nrow(FeatureMatrix)){
+            batchspecific = paste(",", BOI, sep = " ")
+            FeatureMatrix = FeatureMatrix[BOI.vector ==  BOI ,]
+            classVector = classVector[BOI.vector ==  BOI]
+        }else{
+            stop("length of supplied BOI.vector is not the same as the number of rows in FeatureMatrix.")
+        }
     }
     
-    classes = as.character(unique(XCMSobject@phenoData[class][,1]))
-    
-    max.class.size = max(table(stringr::str_count(as.character(XCMSobject@phenoData[class][,1]))))
+    classes = as.character(unique(classVector))
+    max.class.size = max(summary(as.factor(classVector)))
     missing.vals.df = expand.grid(class = classes, Nmissing = seq(0, max.class.size, 1),count = 0)
     colnames(missing.vals.df)[3] = "count"
     RSD.matrix = matrix(NA,ncol=ncol(FeatureMatrix), nrow = length(classes))
     no.missing.matrix = matrix(0,ncol=ncol(FeatureMatrix), nrow = length(classes))
+    
     for(cl in 1:length(classes)){
-        sample.nrs = which(XCMSobject@phenoData[class] == classes[cl])
+        sample.nrs = which(classVector == classes[cl])
         missing.values = rep(0,ncol(FeatureMatrix))
         for(ft in 1:ncol(FeatureMatrix)){
             missing.values[ft] = sum( FeatureMatrix[sample.nrs, ft] < 0.1)
@@ -92,14 +98,14 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
     common.sub.df$count[common.sub.df$class != " common"] = common.peaks.none.missing
     gg1 <- ggplot() +  
         geom_bar(data = missing.vals.df2, 
-                 aes(x = ~Nmissing, y = ~count, fill = ~class),
+                 aes(x = Nmissing, y = count, fill = class),
                  position="dodge", 
                  stat="identity", 
                  width = 0.6,
                  show.legend = TRUE) +
         theme_bw() +
         geom_bar(data = common.sub.df, 
-                 aes(x = ~Nmissing, y = ~count,  fill = ~class, colour = ~common), 
+                 aes(x = Nmissing, y = count,  fill = class, colour = common), 
                  position="dodge", 
                  stat="identity", 
                  width = 0.6, 
@@ -122,7 +128,7 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
     }
     colnames(RSD.plotdata)=c("class","RSDs")
     RSD.plotdata$RSDs = as.numeric(as.character(RSD.plotdata$RSDs))
-    gg2 <- ggplot(RSD.plotdata, aes(x = ~RSDs, colour = as.factor(~class))) + 
+    gg2 <- ggplot(RSD.plotdata, aes(x = RSDs, colour = as.factor(class))) + 
         geom_density(adjust = 1) +
         theme_bw() +
         geom_hline(color = "#e6e6e6", yintercept = 0, size= 0.7)
@@ -138,9 +144,9 @@ QC.plots.features = function(FeatureMatrix, XCMSobject, className = NULL, NA.num
         Npeaks_pr_class[cls] = nrow(RSD.plotdata[RSD.plotdata$class == classes[cls],])
     }
     npeaks.df = data.frame(class = classes, Npeaks = Npeaks_pr_class)
-    gg3 <- ggplot(RSD.plotdata, aes(y = ~RSDs, x = ~class)) + 
+    gg3 <- ggplot(RSD.plotdata, aes(y = RSDs, x = class)) + 
         geom_boxplot() +
-        geom_text(data= npeaks.df, aes(x = ~classes, y = 0, label = ~Npeaks),colour = "red") +
+        geom_text(data= npeaks.df, aes(x = classes, y = 0, label = Npeaks),colour = "red") +
         theme_bw()
     if(!is.null(plottitle)){
         gg3 <- gg3 + ggtitle( paste(plottitle, batchspecific, sep = " ")  ) +
