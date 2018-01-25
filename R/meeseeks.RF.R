@@ -32,7 +32,7 @@
 #' @import parallel
 #'  
 #' @export
-Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL){
+Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, plottitle.extra = NULL){
     
     # FeatureMatrix = BreastCancer[,2:10]
     # GroupLabels = BreastCancer$Class
@@ -294,11 +294,15 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         guides(colour=guide_legend(title="Method"), fill = guide_legend(title="95% interval"))+
         xlab("False Positive Rate (1-specificity)") +
         ylab("True Positive Rate (Sensitivity)") +
-        ggtitle(paste("Random Forest ROC. Mean AUC = ", mean(AUCs),sep = "")) +
         theme_bw() +
         theme(plot.title = element_text(hjust = 0.5)) +
         scale_x_continuous(limits = c(0,1), expand = c(0.005,0.005)) +
         scale_y_continuous(limits = c(0,1), expand = c(0.005,0.005))
+    if(is.null(plottitle.extra)){
+        ppROC <- ppROC + ggtitle(paste("Random Forest ROC. Mean AUC = ", mean(AUCs),sep = "")) 
+    }else{
+        ppROC <- ppROC + ggtitle(paste("Random Forest ROC. Mean AUC = ", mean(AUCs),", ",plottitle.extra,sep = ""))
+    }
     
     ppPR <- ggplot() + 
         geom_line(data = PR, aes(x = PRx, y = PRy, colour = plotcol)) + 
@@ -307,12 +311,15 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         guides(colour=guide_legend(title="Method"), fill = guide_legend(title="95% interval"))+
         xlab("Recall") +
         ylab("Prcision") +
-        ggtitle("Random Forest PR") +
         theme_bw() +
         theme(plot.title = element_text(hjust = 0.5)) +
         scale_x_continuous(limits = c(0,1), expand = c(0.005,0.005)) +
         scale_y_continuous(limits = c(0,1), expand = c(0.005,0.005))
-    
+    if(is.null(plottitle.extra)){
+        ppPR <- ppPR + ggtitle("Random Forest PR") 
+    }else{
+        ppROC <- ppROC + ggtitle(paste("Random Forest PR, ",plottitle.extra,sep = ""))
+    }
     
     
     if(plot.out){
