@@ -12,6 +12,7 @@
 #' @param plot.type Type of plot ourput. "ROC" for receiver operacter characteristic (default) or "PR" for precision-recall.
 #' @param nCPU The number of cores to use (default is the maximum amount available minus 2)
 #' @param plotcol (optional) colour to use for the plot
+#' @param plottitle.extra Optional extra character string to be added to every plot title.
 #'  
 #' @return 
 #' A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with the ROC plot data and 2) a matrix with the variable importance for each cross validated simulation (nFolds * nSims times). 
