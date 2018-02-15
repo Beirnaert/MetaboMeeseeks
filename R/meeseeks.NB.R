@@ -1,4 +1,4 @@
-#' Easy Cross-Validated Naive Bayes
+#' Easy Cross-Validated Naive Bayes Binary Classification
 #'
 #' This function quickly performs a cross-validated Naives Bayes classification on a data matrix.
 #'
@@ -9,8 +9,10 @@
 #' @param nFolds Number of cross validation folds.
 #' @param nSims Number of simulations (every simulation has different folds)
 #' @param plot.out Whether to print the ROC curve (default is TRUE). 
+#' @param plot.type Type of plot ourput. "ROC" for receiver operacter characteristic (default) or "PR" for precision-recall.
 #' @param nCPU The number of cores to use (default is the maximum amount available minus 2)
 #' @param plotcol (optional) colour to use for the plot
+#' @param plottitle.extra Optional extra character string to be added to every plot title.
 #'  
 #' @return 
 #' A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with the ROC plot data and 2) a matrix with the variable importance for each cross validated simulation (nFolds * nSims times). 
@@ -29,9 +31,10 @@
 #' @importFrom ROCR prediction performance
 #' 
 #' @import parallel
+#' @import ggplot2
 #'  
 #' @export
-Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, nCPU = -1, plotcol = NULL){
+Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, plottitle.extra = NULL){
     
     
     #FeatureMatrix = matrixNeg.remainder.filtered.scaled[classlabels.subset %in% c("ctrl","IC10"),]
@@ -143,10 +146,18 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
             rocpred <- ROCR::prediction(predictions = predcv.df$decision.values, labels=GroupLabels)
             
             perf.roc <- ROCR::performance(rocpred, measure = "tpr", x.measure = "fpr")
-            #perf.pr <- ROCR::performance(rocpred, measure = "prec", x.measure = "rec")
+            perf.pr <- ROCR::performance(rocpred, measure = "prec", x.measure = "rec")
             
             perf.roc.xy=data.frame(perf.roc@x.values,perf.roc@y.values)
+            perf.pr.xy=data.frame(perf.pr@x.values,perf.pr@y.values)
+            
             colnames(perf.roc.xy)=c("minspecificity","sensitivity")
+            colnames(perf.pr.xy)=c("recall", "precision")
+            
+            if(is.nan(perf.pr.xy$precision[1])){
+                perf.pr.xy$precision[1] = 1
+            }
+            
             random_diag_line=data.frame(c(0,1),c(0,1))
             colnames(random_diag_line)=c("x","y")
             
@@ -160,7 +171,9 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
 
             perf.roc.xy$AUC = aucvalue@y.values[[1]]
             
-            results[[iPar]] =perf.roc.xy
+            ROC.and.importance = list(ROC = perf.roc.xy, PR = perf.pr.xy)
+            
+            results[[iPar]] =ROC.and.importance
             
         }    
         
@@ -179,22 +192,28 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
     ##########################################################################################
     ##########################################################################################
 
-    perflist = list()
+    perflistROC = list()
+    perflistPR = list()
     AUCs = rep(NA, nSims)
     
     cter = 1
     for(main.loop in 1:length(performanceList)){
         for(small.loop in 1:length(performanceList[[main.loop]])){
-            ROCdata = performanceList[[main.loop]][[small.loop]][,1:2]
+            ROCdata = performanceList[[main.loop]][[small.loop]]$ROC[,1:2]
             ROCdata$sim = cter
-            perflist[[cter]] = ROCdata
-            AUCs[cter] = performanceList[[main.loop]][[small.loop]][1,3]
+            perflistROC[[cter]] = ROCdata
+            
+            PRdata = performanceList[[main.loop]][[small.loop]]$PR[,1:2] # is this true charlie? 4,5? 
+            PRdata$sim = cter
+            perflistPR[[cter]] = PRdata
+            
+            AUCs[cter] = performanceList[[main.loop]][[small.loop]]$ROC[1,3]
             cter = cter + 1
         }
     }
     
-    Performance = data.table::rbindlist(perflist)
-    
+    PerformanceROC = data.table::rbindlist(perflistROC)
+    PerformancePR = data.table::rbindlist(perflistPR)
     
     Nplotpoints = 100
     
@@ -203,17 +222,22 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
                     lower = rep(NA,Nplotpoints),
                     upper = rep(NA,Nplotpoints))
     
-    
+    PR = data.frame(PRx = seq(0, 1, length.out = Nplotpoints),
+                    PRy = rep(NA,Nplotpoints),
+                    lower = rep(NA,Nplotpoints),
+                    upper = rep(NA,Nplotpoints))
     
     for( l in 1: nrow(RC)){
-        
         if(l!=1){
-            ROC.data = Performance[Performance$minspecificity > RC$ROCx[l-1] & Performance$minspecificity <= RC$ROCx[l],  ]
+            ROC.data = PerformanceROC[PerformanceROC$minspecificity > RC$ROCx[l-1] & PerformanceROC$minspecificity <= RC$ROCx[l],  ]
         }else{
-            ROC.data = Performance[Performance$minspecificity <= RC$ROCx[l],  ]
+            ROC.data = PerformanceROC[PerformanceROC$minspecificity <= RC$ROCx[l],  ]
         }
-       RC[l,2:4] = quantile(ROC.data$sensitivity, c(1/2,0.025,0.975))
-                         
+        if(nrow(ROC.data) != 0){
+            RC[l,2:4] = quantile(ROC.data$sensitivity, c(1/2,0.025,0.975))
+        } else{
+            RC[l,2:4] = RC[(l-1),2:4]
+        }
     }
     RC = rbind(c(0,0,0,RC$upper[1]),RC)
     
@@ -226,30 +250,75 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         }
     }
     
+    for( l in 1: nrow(PR)){
+        if(l!=1){
+            PR.data = PerformancePR[PerformancePR$recall > PR$PRx[l-1] & PerformancePR$recall <= PR$PRx[l],  ]
+        }else{
+            PR.data = PerformancePR[PerformancePR$recall <= PR$PRx[l],  ]
+        }
+        PR[l,2:4] = quantile(PR.data$precision, c(1/2,0.025,0.975), na.rm = T)
+    }
+    
+    if(anyNA(PR)){
+        incomplete.cases = which(!complete.cases(PR))
+        for(cc in 1:length(incomplete.cases)){
+            for(incomplete.col in which(is.na(PR[incomplete.cases[cc],]))){
+                PR[incomplete.cases[cc],incomplete.col] = PR[incomplete.cases[cc]-1,incomplete.col]
+            }
+        }
+    }
+    
     random_diag_line=data.frame(c(0,1),c(0,1))
     colnames(random_diag_line)=c("x","y")
     
-    pp <- ggplot() + 
-        geom_line(data = RC, aes(x= ROCx, y = ROCy, colour = plotcol)) + 
+    
+    
+    ppROC <- ggplot() + 
+        geom_line(data = RC, aes(x = ROCx, y = ROCy, colour = plotcol)) + 
         geom_ribbon(data = RC, aes(x = ROCx, ymin = lower, ymax = upper, fill = plotcol), alpha=0.2) +
-        geom_line(data=random_diag_line, aes(x = x, y = y), colour="black") +
+        geom_line(data=random_diag_line, aes(x = x, y = y),colour="black") +
         guides(colour=guide_legend(title="Method"), fill = guide_legend(title="95% interval"))+
         xlab("False Positive Rate (1-specificity)") +
         ylab("True Positive Rate (Sensitivity)") +
-        ggtitle(paste("Naive Bayes ROC. Mean AUC = ", mean(AUCs),sep = "")) +
         theme_bw() +
-        theme(plot.title = element_text(hjust = 0.5)) 
-       
+        theme(plot.title = element_text(hjust = 0.5)) +
+        scale_x_continuous(limits = c(0,1), expand = c(0.005,0.005)) +
+        scale_y_continuous(limits = c(0,1), expand = c(0.005,0.005))
+    if(is.null(plottitle.extra)){
+        ppROC <- ppROC + ggtitle(paste("Naive Bayes ROC. Mean AUC = ", mean(AUCs),sep = "")) 
+    }else{
+        ppROC <- ppROC + ggtitle(paste("Naive Bayes ROC. Mean AUC = ", mean(AUCs),", ",plottitle.extra,sep = ""))
+    }
+    
+    ppPR <- ggplot() + 
+        geom_line(data = PR, aes(x = PRx, y = PRy, colour = plotcol)) + 
+        geom_ribbon(data = PR, aes(x = PRx, ymin = lower, ymax = upper, fill = plotcol), alpha=0.2) +
+        #geom_line(data=random_diag_line, aes(x=x,y=y),colour="black") +
+        guides(colour=guide_legend(title="Method"), fill = guide_legend(title="95% interval"))+
+        xlab("Recall") +
+        ylab("Prcision") +
+        theme_bw() +
+        theme(plot.title = element_text(hjust = 0.5)) +
+        scale_x_continuous(limits = c(0,1), expand = c(0.005,0.005)) +
+        scale_y_continuous(limits = c(0,1), expand = c(0.005,0.005))
+    if(is.null(plottitle.extra)){
+        ppPR <- ppPR + ggtitle("Naive Bayes PR") 
+    }else{
+        ppPR <- ppPR + ggtitle(paste("Naive Bayes PR, ",plottitle.extra,sep = ""))
+    }
+    
+    
     if(plot.out){
-        print(pp)
+        if( plot.type != "PR"){
+            print(ppROC)
+        } else{
+            print(ppPR)
+        }
+        
     } 
     
-    return(RC)
+    
+    Results = list( ROCdata = RC, ROCplot = ppROC, PRplor = ppPR)
+    return(Results)
     
 }
-
-
-
-
-
-

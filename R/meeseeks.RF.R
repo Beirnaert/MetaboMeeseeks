@@ -1,4 +1,4 @@
-#' Easy Cross-Validated Random Forest
+#' Easy Cross-Validated Random Forest Binary Classification
 #'
 #' This function quickly performs a cross-validated Random Forest classification on a data matrix.
 #'
@@ -30,6 +30,7 @@
 #' @importFrom ROCR prediction performance
 #' 
 #' @import parallel
+#' @import ggplot2
 #'  
 #' @export
 Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, plottitle.extra = NULL){
@@ -318,7 +319,7 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
     if(is.null(plottitle.extra)){
         ppPR <- ppPR + ggtitle("Random Forest PR") 
     }else{
-        ppROC <- ppROC + ggtitle(paste("Random Forest PR, ",plottitle.extra,sep = ""))
+        ppPR <- ppPR + ggtitle(paste("Random Forest PR, ",plottitle.extra,sep = ""))
     }
     
     
