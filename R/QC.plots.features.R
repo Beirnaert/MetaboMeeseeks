@@ -9,7 +9,7 @@
 #' @param NA.numeric.limit If missing values are not indicated as NA but with a numeric value like 0, supply the numerical value under which values are considered missing.
 #' @param plottitle (Optional) Plot title 
 #' @param BOI.vector (Optional) In case the RSD's need only be calculated for a specific subset of batches, provide the character/factor vector witch batches here (same length as the number of rows in FeatureMatrix).
-#' @param BOI (Optinal) The name of the batch of interest. BOI.varname has to be supplied as well
+#' @param BOI (Optinal) The name of the batch of interest. BOI.vector has to be supplied as well
 #'  
 #' @return 
 #' several QC plots
