@@ -141,7 +141,10 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
                 names(predcv.list[[i]])<-c("ID","decision.values")
                 #predcv.votes.list[[i]] <- as.data.frame(cbind(rownames(validData), as.character(predlabel)))
                 
-                
+                train = trainData
+                train$Label = trainLabels 
+                M <- fit(Label~., data=train, model="svm", task = "prob")
+                svm.imp <- Importance(M, data=train)
                 
             }
             
@@ -311,7 +314,7 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
         #geom_line(data=random_diag_line, aes(x=x,y=y),colour="black") +
         guides(colour=guide_legend(title="Method"), fill = guide_legend(title="95% interval"))+
         xlab("Recall") +
-        ylab("Prcision") +
+        ylab("Precision") +
         theme_bw() +
         theme(plot.title = element_text(hjust = 0.5)) +
         scale_x_continuous(limits = c(0,1), expand = c(0.005,0.005)) +
