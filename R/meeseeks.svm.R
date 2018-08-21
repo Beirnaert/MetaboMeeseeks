@@ -1,6 +1,6 @@
 #' Easy Cross-Validated SVM Binary Classification
 #'
-#' This function quickly performs a cross-validated SVM classification on a data matrix.
+#' ****** STILL CONTAINS BUGS (inverse ROC and PR) ****** This function quickly performs a cross-validated SVM classification on a data matrix.
 #'
 #'  
 #' @param FeatureMatrix The matrix of Features (obtained by using the xcms::groupval function). Matrix has to have columns for features and rows for samples. 
@@ -14,6 +14,8 @@
 #' @param plotcol (optional) colour to use for the plot
 #' @param svm.kernel The kernal to be used for the svm (default is linear)
 #' @param plottitle.extra Optional extra character string to be added to every plot title.
+#' @param prediction_prob Whether to take the values for the TRUE prediction (default) or the FALSE prediction. Choosing FALSE inverts the ROC curve.
+#' @param Nplotpoints The amount of points used to construct the plot.
 #'  
 #' @return 
 #' A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with the ROC plot data and 2) a matrix with the variable importance for each cross validated simulation (nFolds * nSims times). 
@@ -35,7 +37,7 @@
 #' @import ggplot2
 #'  
 #' @export
-Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, svm.kernel = "linear", plottitle.extra = NULL){
+Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, svm.kernel = "linear", plottitle.extra = NULL, prediction_prob = TRUE, Nplotpoints = 501){
     
     
     
@@ -137,14 +139,18 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
                 predlabel.probs <- stats::predict(object = meeseeks.model, newdata = validData, decision.values = TRUE, probability = TRUE)
                 
                 #predlabel <- stats::predict(object = meeseeks.model, newdata = validData, type = "class")
-                predcv.list[[i]] <- as.data.frame(cbind(SampleLabels[Group.fold[[i]]], attr(predlabel.probs, "probabilities")[,2,drop=FALSE])) 
+                if(prediction_prob){
+                    predcv.list[[i]] <- as.data.frame(cbind(SampleLabels[Group.fold[[i]]], attr(predlabel.probs, "probabilities")[,2,drop=FALSE])) 
+                }else{
+                    predcv.list[[i]] <- as.data.frame(cbind(SampleLabels[Group.fold[[i]]], attr(predlabel.probs, "probabilities")[,1,drop=FALSE])) 
+                }
                 names(predcv.list[[i]])<-c("ID","decision.values")
                 #predcv.votes.list[[i]] <- as.data.frame(cbind(rownames(validData), as.character(predlabel)))
                 
                 train = trainData
                 train$Label = trainLabels 
-                M <- fit(Label~., data=train, model="svm", task = "prob")
-                svm.imp <- Importance(M, data=train)
+                #M <- rminer::fit(Label~., data=train, model="svm", task = "prob")
+                #svm.imp <- rminer::Importance(M, data=train)
                 
             }
             
@@ -218,8 +224,25 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
     for(main.loop in 1:length(performanceList)){
         for(small.loop in 1:length(performanceList[[main.loop]])){
             ROCdata = performanceList[[main.loop]][[small.loop]]$ROC[,1:2]
-            ROCdata$sim = cter
-            perflistROC[[cter]] = ROCdata
+            ROCdata_expanded = data.frame(minspecificity = seq(0, 1, length.out = Nplotpoints),
+                                          sensitivity = rep(NA,Nplotpoints),
+                                          sim = cter)
+            
+            for( l in 1: nrow(ROCdata_expanded)){
+                if(l!=1){
+                    ROCdata.expanded = ROCdata[ROCdata$minspecificity > ROCdata_expanded$minspecificity[l-1] & ROCdata$minspecificity <= ROCdata_expanded$minspecificity[l], ]   
+                }else{
+                    ROCdata.expanded = ROCdata[ ROCdata$minspecificity <= ROCdata_expanded$minspecificity[l], ]
+                }
+                if(nrow(ROCdata.expanded) != 0){
+                    ROCdata_expanded$sensitivity[l] = mean(ROCdata.expanded$sensitivity)
+                } else{
+                    ROCdata_expanded$sensitivity[l] = ROCdata_expanded$sensitivity[l-1]
+                }
+                
+            }
+            
+            perflistROC[[cter]] = ROCdata_expanded
             
             PRdata = performanceList[[main.loop]][[small.loop]]$PR[,1:2] # is this true charlie? 4,5? 
             PRdata$sim = cter
@@ -232,8 +255,7 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
     
     PerformanceROC = data.table::rbindlist(perflistROC)
     PerformancePR = data.table::rbindlist(perflistPR)
-    
-    Nplotpoints = 100
+
     
     RC = data.frame(ROCx = seq(0, 1, length.out = Nplotpoints),
                     ROCy = rep(NA,Nplotpoints),

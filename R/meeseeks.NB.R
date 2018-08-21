@@ -13,6 +13,7 @@
 #' @param nCPU The number of cores to use (default is the maximum amount available minus 2)
 #' @param plotcol (optional) colour to use for the plot
 #' @param plottitle.extra Optional extra character string to be added to every plot title.
+#' @param Nplotpoints The amount of points used to construct the plot.
 #'  
 #' @return 
 #' A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with the ROC plot data and 2) a matrix with the variable importance for each cross validated simulation (nFolds * nSims times). 
@@ -34,7 +35,7 @@
 #' @import ggplot2
 #'  
 #' @export
-Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, plottitle.extra = NULL){
+Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, plottitle.extra = NULL, Nplotpoints = 501){
     
     
     #FeatureMatrix = matrixNeg.remainder.filtered.scaled[classlabels.subset %in% c("ctrl","IC10"),]
@@ -200,8 +201,25 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
     for(main.loop in 1:length(performanceList)){
         for(small.loop in 1:length(performanceList[[main.loop]])){
             ROCdata = performanceList[[main.loop]][[small.loop]]$ROC[,1:2]
-            ROCdata$sim = cter
-            perflistROC[[cter]] = ROCdata
+            ROCdata_expanded = data.frame(minspecificity = seq(0, 1, length.out = Nplotpoints),
+                                          sensitivity = rep(NA,Nplotpoints),
+                                          sim = cter)
+            
+            for( l in 1: nrow(ROCdata_expanded)){
+                if(l!=1){
+                    ROCdata.expanded = ROCdata[ROCdata$minspecificity > ROCdata_expanded$minspecificity[l-1] & ROCdata$minspecificity <= ROCdata_expanded$minspecificity[l], ]   
+                }else{
+                    ROCdata.expanded = ROCdata[ ROCdata$minspecificity <= ROCdata_expanded$minspecificity[l], ]
+                }
+                if(nrow(ROCdata.expanded) != 0){
+                    ROCdata_expanded$sensitivity[l] = mean(ROCdata.expanded$sensitivity)
+                } else{
+                    ROCdata_expanded$sensitivity[l] = ROCdata_expanded$sensitivity[l-1]
+                }
+                
+            }
+            
+            perflistROC[[cter]] = ROCdata_expanded
             
             PRdata = performanceList[[main.loop]][[small.loop]]$PR[,1:2] # is this true charlie? 4,5? 
             PRdata$sim = cter
@@ -214,8 +232,7 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
     
     PerformanceROC = data.table::rbindlist(perflistROC)
     PerformancePR = data.table::rbindlist(perflistPR)
-    
-    Nplotpoints = 100
+
     
     RC = data.frame(ROCx = seq(0, 1, length.out = Nplotpoints),
                     ROCy = rep(NA,Nplotpoints),
