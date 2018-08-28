@@ -1,6 +1,6 @@
 Package: MetaboMeeseeks
-Version: 0.1.10046
-Date: 2018-08-20
+Version: 0.1.10048
+Date: 2018-08-28
 Title: Helper functions for metabolomics analysis
 Author: Charlie Beirnaert, Matthias Cuykx, Sebastiaan Bijtebier
 Maintainer: Charlie Beirnaert <charlie_beirnaert@icloud.com>
@@ -9,21 +9,20 @@ Depends:
     R (>= 3.1.0)
 Imports:
     xcms,
-    CAMERA,
-    ggplot2,
-    mixOmics,
-    foreach,
-    matrixStats,
+    CAMERA, 
+    ggplot2, 
+    mixOmics, 
+    foreach, 
+    matrixStats, 
     parallel,
-    ROCR,
-    caret,
-    data.table,
+    ROCR, 
+    caret, 
+    data.table, 
     doSNOW,
-    e1071,
-    purrr,
-    randomForest,
-    stats,
-    stringr
+    e1071, 
+    purrr, 
+    randomForest, 
+    stats
 Suggests:
     knitr,
     rmarkdown
