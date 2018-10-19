@@ -314,9 +314,9 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
     
     
     ppROC <- ggplot() + 
-        geom_line(data = RC, aes(x = ROCx, y = ROCy, colour = plotcol)) + 
-        geom_ribbon(data = RC, aes(x = ROCx, ymin = lower, ymax = upper, fill = plotcol), alpha=0.2) +
-        geom_line(data=random_diag_line, aes(x = x, y = y),colour="black") +
+        geom_line(data = RC, aes_string(x = 'ROCx', y = 'ROCy', colour = 'plotcol')) + 
+        geom_ribbon(data = RC, aes_string(x = 'ROCx', ymin = 'lower', ymax = 'upper', fill = 'plotcol'), alpha=0.2) +
+        geom_line(data = random_diag_line, aes_string(x = 'x', y = 'y'),colour="black") +
         guides(colour=guide_legend(title="Method"), fill = guide_legend(title="95% interval"))+
         xlab("False Positive Rate (1-specificity)") +
         ylab("True Positive Rate (Sensitivity)") +
@@ -331,9 +331,8 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
     }
     
     ppPR <- ggplot() + 
-        geom_line(data = PR, aes(x = PRx, y = PRy, colour = plotcol)) + 
-        geom_ribbon(data = PR, aes(x = PRx, ymin = lower, ymax = upper, fill = plotcol), alpha=0.2) +
-        #geom_line(data=random_diag_line, aes(x=x,y=y),colour="black") +
+        geom_line(data = PR, aes_string(x = 'PRx', y = 'PRy', colour = 'plotcol')) + 
+        geom_ribbon(data = PR, aes_string(x = 'PRx', ymin = 'lower', ymax = 'upper', fill = 'plotcol'), alpha=0.2) +
         guides(colour=guide_legend(title="Method"), fill = guide_legend(title="95% interval"))+
         xlab("Recall") +
         ylab("Precision") +

@@ -98,14 +98,14 @@ QC.plots.features = function(FeatureMatrix, classVector, COI = NULL, NA.numeric.
     common.sub.df$count[common.sub.df$class != " common"] = common.peaks.none.missing
     gg1 <- ggplot() +  
         geom_bar(data = missing.vals.df2, 
-                 aes(x = Nmissing, y = count, fill = class),
+                 aes_string(x = 'Nmissing', y = 'count', fill = 'class'),
                  position="dodge", 
                  stat="identity", 
                  width = 0.6,
                  show.legend = TRUE) +
         theme_bw() +
         geom_bar(data = common.sub.df, 
-                 aes(x = Nmissing, y = count,  fill = class, colour = common), 
+                 aes_string(x = 'Nmissing', y = 'count',  fill = 'class', colour = 'common'), 
                  position="dodge", 
                  stat="identity", 
                  width = 0.6, 
@@ -144,7 +144,7 @@ QC.plots.features = function(FeatureMatrix, classVector, COI = NULL, NA.numeric.
         Npeaks_pr_class[cls] = nrow(RSD.plotdata[RSD.plotdata$class == classes[cls],])
     }
     npeaks.df = data.frame(class = classes, Npeaks = Npeaks_pr_class)
-    gg3 <- ggplot(RSD.plotdata, aes(y = RSDs, x = class)) + 
+    gg3 <- ggplot(RSD.plotdata, aes_string(y = RSDs, x = class)) + 
         geom_boxplot() +
         geom_text(data= npeaks.df, aes(x = classes, y = 0, label = Npeaks),colour = "red") +
         theme_bw()

@@ -48,7 +48,7 @@ RTcorrChecker = function(RTcorr1.xcmsGrouped = NULL ,
                            RTmethod = c(rep("method1", length(unlist(RT1.diffs))),
                                         rep("method2", length(unlist(RT2.diffs)))) )
     
-    ggplot(RTdiff.df, aes(RTdiffs, fill = RTmethod, colour = RTmethod))+ 
+    ggplot(RTdiff.df, aes_string('RTdiffs', fill = 'RTmethod', colour = 'RTmethod'))+ 
         geom_histogram(alpha = 0.5, position = "identity") + 
         theme_bw()
     
