@@ -17,7 +17,7 @@
 #' @example
 #' 
 #' @export
-EICsBatchPlotter <- function(XCMSobject, groups = NULL, sample_names = NULL, sample_indices = NULL, ...){
+EICsBatchPlotter <- function(XCMSobject, groups = NULL, sample_names = NULL, sample_indices = NULL, phenotype_classname = NULL, plot_samples = FALSE, ...){
     
     ## checks for the arguments
     if(is.null(groups)){
@@ -40,8 +40,18 @@ EICsBatchPlotter <- function(XCMSobject, groups = NULL, sample_names = NULL, sam
     if(max(sample_indices) > length(rownames(XCMSobject@phenoData))){
         stop("There are more 'samples' than the amount of samples in the XCMSobject(@phenoData)")
     }
-    
     sample_indices <- as.integer(sample_indices)
+    
+    if(!plot_samples){
+        if(!is.null(phenotype_classname) & !phenotype_classname %in% names(XCMSobject@phenoData)){
+            phenotype_classname = names(XCMSobject@phenoData)[1]
+            warning(paste("The 'phenotype_classname' variable is not in the phenoData of the XCMSobject. The variable '", phenotype_classname,"' is chosen", sep = ""))
+        }else if(is.null(phenotype_classname)){
+            phenotype_classname = names(XCMSobject@phenoData)[1]
+            message(paste("The 'phenotype_classname' variable is chosen to be ",phenotype_classname, sep = ""))
+        }
+    }
+    
     
     ## collecting EICs
     EICint <- xcms::getEIC(object = XCMSobject,
@@ -69,22 +79,38 @@ EICsBatchPlotter <- function(XCMSobject, groups = NULL, sample_names = NULL, sam
             start <- stop +1
             stop <- sum(eiclength[1:m])
             
-            EIC_df$rt[start:stop] <- EICint@eic[[m]][[k]][,"rt"]
-            EIC_df$intensity[start:stop] <- EICint@eic[[m]][[k]][,"intensity"]
-            EIC_df$sample[start:stop] <- sample_indices[m]
-            EIC_df$class[start:stop] <- as.character(XCMSobject@phenoData$class[sample_indices[m]])
+            if(!plot_samples){
+                EIC_df$rt[start:stop] <- EICint@eic[[m]][[k]][,"rt"]
+                EIC_df$intensity[start:stop] <- EICint@eic[[m]][[k]][,"intensity"]
+                EIC_df$sample[start:stop] <- sample_indices[m]
+                EIC_df$class[start:stop] <- as.character(XCMSobject@phenoData[sample_indices[m],phenotype_classname])
+            } else{
+                EIC_df$rt[start:stop] <- EICint@eic[[m]][[k]][,"rt"]
+                EIC_df$intensity[start:stop] <- EICint@eic[[m]][[k]][,"intensity"]
+                EIC_df$sample[start:stop] <- sample_indices[m]
+            }
         }
         
         
+        
         ## plotting
-        gg <- ggplot(EIC_df, aes(x = rt, y = intensity, color = class, group = sample)) + 
-            geom_line() +
-            ggtitle(paste(round(XCMSobject@groups[groups[k],"mzmed"],4),
-                          "m/z @",
-                          round(XCMSobject@groups[groups[k],"rtmed"],0),
-                          "s")) + 
-            xlab("RT (s)") +
-            ylab("raw intensities")
+        if(!plot_samples){
+            gg <- ggplot(EIC_df, aes(x = rt, y = intensity, color = class, group = sample)) + 
+                geom_line() +
+                ggtitle(paste("m/z",round(XCMSobject@groups[groups[k],"mzmed"],4),
+                              "@",round(XCMSobject@groups[groups[k],"rtmed"],0), "s")) + 
+                xlab("RT (s)") +
+                ylab("raw intensities")
+        }else{
+            EIC_df$sample = as.factor(EIC_df$sample)
+            gg <- ggplot(EIC_df, aes(x = rt, y = intensity, color = sample, group = sample)) + 
+                geom_line() +
+                ggtitle(paste("m/z",round(XCMSobject@groups[groups[k],"mzmed"],4),
+                              "@",round(XCMSobject@groups[groups[k],"rtmed"],0), "s")) + 
+                xlab("RT (s)") +
+                ylab("raw intensities")
+        }
+        
         
         EICplots[[k]] <- gg
         EICplotdata[[k]] <- EIC_df
