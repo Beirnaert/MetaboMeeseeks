@@ -1,8 +1,8 @@
 Package: MetaboMeeseeks
-Version: 0.1.10055
+Version: 0.1.2
 Date: 2018-10-23
 Title: Helper functions for metabolomics analysis
-Author: Charlie Beirnaert, Matthias Cuykx, Sebastiaan Bijtebier
+Author: Charlie Beirnaert, Matthias Cuykx, Sebastiaan Bijttebier
 Maintainer: Charlie Beirnaert <charlie_beirnaert@icloud.com>
 Description: To Be Anounced.
 Depends: R (>= 3.1.0)
