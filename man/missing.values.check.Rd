@@ -5,8 +5,9 @@
 \title{Missing value proportion checker}
 \usage{
 missing.values.check(DataMatrix, subclasses.list = NULL,
-  prop.missing.threshold = 0.2, Na.or.numeric.limit = NA, labels = NULL,
-  feature.orientation = "columns", groups.ok.threshold = 1)
+  prop.missing.threshold = 0.2, Na.or.numeric.limit = NA,
+  labels = NULL, feature.orientation = "columns",
+  groups.ok.threshold = 1)
 }
 \arguments{
 \item{DataMatrix}{A matrix with feature groups as columns and samples for rows.}

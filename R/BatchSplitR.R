@@ -1,13 +1,9 @@
-#' Function to split up xcms object by catch to perform a within batch analysis and merge the results at the end
+#' Function to split up xcms object by catch to perform a within batch analysis and merge the results at the end.
 #'
-#' binnen batch analyse 
-#' gebruik obiwarp om te weten hoe je de features van batch 1 en 2 aan elkaar moet plakken
-#' doe dan analyse loess, PLSDA van batch 1 en 2 afzonderlijk. Giet alles in data frame (significant, fold change)
-# 
 #'
 #' @param xcmsObject XCMS object after multi-batch retention time correction and grouping.
 #' @param BatchClassLabel The name of the vector containing the Batch identifier (in xcmsObject@phenoData)
-#' @param BatchNames (optional) A vector with the names of the individual batches to consider eg c("Batch1", "Batch2"). Note that this is only if a subset of all the batches have to be selected. Otherwise supplying BatchClassLabel is sufficient. 
+#' @param BatchNames (optional) A vector with the names of the individual batches to consider e.g. c("Batch1", "Batch2"). Note that this is only if a subset of all the batches have to be selected. Otherwise supplying BatchClassLabel is sufficient. 
 #'
 #'   
 #' @return xcmsObject.split A list with in each list entry an xcms object of a single batch.

@@ -1,12 +1,8 @@
 #' Function to split up xcms object by catch to perform a within batch analysis and merge the results at the end
 #'
-#' binnen batch analyse 
-#' gebruik obiwarp om te weten hoe je de features van batch 1 en 2 aan elkaar moet plakken
-#' doe dan analyse loess, PLSDA van batch 1 en 2 afzonderlijk. Giet alles in data frame (significant, fold change)
-# 
 #'
-#' @param plsdaMatrix The matrix to be used inthe PLSDA
-#' @param classLabels The class labels. The length must correpsond to the amount of rows in the plsdaMatrix
+#' @param plsdaMatrix The matrix to be used in the PLSDA
+#' @param classLabels The class labels. The length must correspond to the amount of rows in the plsdaMatrix
 #' @param plotMarks (optional) A character vector with plot labels (same length as classLabels).
 #' @param plotOutputs (logical) Whether to plot the PCA scores and loadings.
 #' 

@@ -3,7 +3,7 @@
 #' 
 #'
 #' @param xcmsObject XCMS object to be peak filled
-#' @param unStructureBatchesObject XCMS object after retreived after the unStructureBatches fumction
+#' @param unStructureBatchesObject XCMS object after retrieved after the unStructureBatches function
 #'
 #'   
 #' @return xcmsObject A peak filled xcms object

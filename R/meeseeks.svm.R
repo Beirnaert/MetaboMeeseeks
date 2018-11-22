@@ -9,10 +9,10 @@
 #' @param nFolds Number of cross validation folds.
 #' @param nSims Number of simulations (every simulation has different folds)
 #' @param plot.out Whether to print the ROC curve (default is TRUE). 
-#' @param plot.type Type of plot ourput. "ROC" for receiver operacter characteristic (default) or "PR" for precision-recall.
+#' @param plot.type Type of plot output. "ROC" for receiver operator characteristic (default) or "PR" for precision-recall.
 #' @param nCPU The number of cores to use (default is the maximum amount available minus 2)
 #' @param plotcol (optional) colour to use for the plot
-#' @param svm.kernel The kernal to be used for the svm (default is linear)
+#' @param svm.kernel The kernel to be used for the svm (default is linear)
 #' @param plottitle.extra Optional extra character string to be added to every plot title.
 #' @param prediction_prob Whether to take the values for the TRUE prediction (default) or the FALSE prediction. Choosing FALSE inverts the ROC curve.
 #' @param Nplotpoints The amount of points used to construct the plot.

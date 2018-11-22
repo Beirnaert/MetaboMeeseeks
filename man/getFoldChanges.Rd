@@ -12,7 +12,7 @@ getFoldChanges(DataMatrix, classlabels, baseClass = NULL,
 
 \item{classlabels}{the class labels (nr of vector elements must be equal to number of rows in DataMatrix)}
 
-\item{baseClass}{The baseclass for the fold change clauculation}
+\item{baseClass}{The base class for the fold change calculation}
 
 \item{classOfInterest}{The class of interest for the fold change calculation}
 
@@ -22,7 +22,7 @@ getFoldChanges(DataMatrix, classlabels, baseClass = NULL,
 foldChanges A vector with the fold changes
 }
 \description{
-Filter out isotopes based on the PUTMEDID concept
+calculate fold changes
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

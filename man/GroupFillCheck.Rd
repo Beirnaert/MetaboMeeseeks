@@ -15,7 +15,7 @@ A data.frame with quality control metrics for each group.
 \description{
 Function to check the peak filling and grouping. Every group gets a score for the mz range, the RT range and the filling/
 For example, filled peaks cannot have intensities considerably larger than the already present peaks. 
-This violates the assuption that these peaks are missed in peak detection because they are smaller.
+This violates the assumption that these peaks are missed in peak detection because they are smaller.
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

@@ -21,7 +21,7 @@ Std.matcher(Standards.mz, Standards.RT, Data, Standards.ratios = NULL,
 
 \item{max.mz}{maximal mz distance (not necessary if ppm supplied)}
 
-\item{max.RT.narrow}{prefered maximal RT distance}
+\item{max.RT.narrow}{preferred maximal RT distance}
 
 \item{max.RT.wide}{extended RT search area. A peak is only accepted here when the improvement in ppm difference is at least accept.ppm.diff}
 
@@ -32,7 +32,7 @@ A list with 3 vector/matrix entries (the same size as the supplied vector/matrix
 The first are the matched peaks/groups. The second the ppm differences. The third the RT differences.
 }
 \description{
-This function searces for XCMS objects (peaks, groups) that match with the provided standards (optionally with isotopic profiles).
+This function searches for XCMS objects (peaks, groups) that match with the provided standards (optionally with isotopic profiles).
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

@@ -1,10 +1,9 @@
 #' calculate fold changes
 #'
-#' Filter out isotopes based on the PUTMEDID concept
 #'
 #' @param DataMatrix The data matrix
 #' @param classlabels the class labels (nr of vector elements must be equal to number of rows in DataMatrix)
-#' @param baseClass The baseclass for the fold change clauculation
+#' @param baseClass The base class for the fold change calculation
 #' @param classOfInterest The class of interest for the fold change calculation
 #' @param datatype Indication whether the Datamatrix is intensities (ints) or log2 values (log2s).
 #'  

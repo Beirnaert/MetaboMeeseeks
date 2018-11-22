@@ -10,7 +10,7 @@ peak.filter(XCMSobject, min.RT.width = NULL, max.RT.width = NULL,
 \arguments{
 \item{XCMSobject}{An xcmsSet object after peak picking.}
 
-\item{min.RT.width}{The minimal retentiuon time width a peak must have}
+\item{min.RT.width}{The minimal retention time width a peak must have}
 
 \item{max.RT.width}{The maximal retention time width a peak may have}
 

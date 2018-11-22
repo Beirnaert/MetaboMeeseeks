@@ -4,8 +4,8 @@
 \alias{QC.plots.peaks}
 \title{QC plots for peak data}
 \usage{
-QC.plots.peaks(XCMSobject, include.postfill.plots = FALSE, className = NULL,
-  plottitle = NULL)
+QC.plots.peaks(XCMSobject, include.postfill.plots = FALSE,
+  className = NULL, plottitle = NULL)
 }
 \arguments{
 \item{XCMSobject}{An xcmsSet object}
@@ -14,10 +14,10 @@ QC.plots.peaks(XCMSobject, include.postfill.plots = FALSE, className = NULL,
 
 \item{className}{In case there are multiple class definitions in the XCMSobject@phenoData object, the one of interest can be specified here. If not the code will ask.}
 
-\item{plottitle}{(optinal) The title to place above the plot(s).}
+\item{plottitle}{(optional) The title to place above the plot(s).}
 }
 \value{
-a QC plot for nr of peaks
+A QC plot for nr of peaks
 }
 \description{
 Mean number of peaks are plotted for the peak data

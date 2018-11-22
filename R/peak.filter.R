@@ -4,7 +4,7 @@
 #'
 #'  
 #' @param XCMSobject An xcmsSet object after peak picking.
-#' @param min.RT.width The minimal retentiuon time width a peak must have
+#' @param min.RT.width The minimal retention time width a peak must have
 #' @param max.RT.width The maximal retention time width a peak may have
 #' @param max.ppm.width The maximal allowed ppm width for a single peak
 #' @param gauss.fail.threshold The threshold for the egauss XCMS parameter, below which the peak is rejected.

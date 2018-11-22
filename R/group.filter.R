@@ -1,7 +1,7 @@
 #' Group Filtering
 #'
 #' After grouping and peak filling, this function filters out bad groups/features. 
-#' There is the posibility of supplying groups of interest in which case the. 
+#' There is the possibility of supplying groups of interest in which case the. 
 #' TODO: param ToDo......ClassesOfInterest (optional) The classes to include in the calculation 
 #' of group properties. 
 #' param ToDo classVector (required if ClassesOfInterest provided) vector with classlabels.

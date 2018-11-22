@@ -1,6 +1,6 @@
 #' Standards Locater
 #'
-#' This function searces for XCMS objects (peaks, groups) that match with the provided standards (optionally with isotopic profiles).
+#' This function searches for XCMS objects (peaks, groups) that match with the provided standards (optionally with isotopic profiles).
 #'
 #'  
 #' @param Standards.mz A vector (single standards) or matrix (isotopic profiles) with the standards.
@@ -9,7 +9,7 @@
 #' @param Standards.ratios Optional matrix. Matrix with the intensity ratio's
 #' @param max.ppm maximal ppm distance
 #' @param max.mz maximal mz distance (not necessary if ppm supplied)
-#' @param max.RT.narrow prefered maximal RT distance 
+#' @param max.RT.narrow preferred maximal RT distance 
 #' @param max.RT.wide extended RT search area. A peak is only accepted here when the improvement in ppm difference is at least accept.ppm.diff
 #' @param accept.ppm.diff The improvement in ppm difference a peak in the wider RT area has to have for it to be accepted 
 #'  

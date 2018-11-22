@@ -4,7 +4,8 @@
 \alias{relevant.features.p.extended}
 \title{identify features (columns in the datamatrix) which are significantly associated with the outcome vector}
 \usage{
-relevant.features.p.extended(datamatrix, responsevector, p.adj = "bonferroni")
+relevant.features.p.extended(datamatrix, responsevector,
+  p.adj = "bonferroni")
 }
 \arguments{
 \item{datamatrix}{the data matrix with a column for each feature.}

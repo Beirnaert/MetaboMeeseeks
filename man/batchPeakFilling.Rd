@@ -9,7 +9,7 @@ batchPeakFilling(xcmsObject, unStructureBatchesObject)
 \arguments{
 \item{xcmsObject}{XCMS object to be peak filled}
 
-\item{unStructureBatchesObject}{XCMS object after retreived after the unStructureBatches fumction}
+\item{unStructureBatchesObject}{XCMS object after retrieved after the unStructureBatches function}
 }
 \value{
 xcmsObject A peak filled xcms object

@@ -2,10 +2,12 @@
 % Please edit documentation in R/meeseeks.NB.R
 \name{Meeseeks.NB}
 \alias{Meeseeks.NB}
-\title{Easy Cross-Validated Naive Bayes}
+\title{Easy Cross-Validated Naive Bayes Binary Classification}
 \usage{
-Meeseeks.NB(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10,
-  nSims = 20, plot.out = TRUE, nCPU = -1, plotcol = NULL)
+Meeseeks.NB(FeatureMatrix, GroupLabels, SampleLabels = NULL,
+  nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC",
+  nCPU = -1, plotcol = NULL, plottitle.extra = NULL,
+  Nplotpoints = 501)
 }
 \arguments{
 \item{FeatureMatrix}{The matrix of Features (obtained by using the xcms::groupval function). Matrix has to have columns for features and rows for samples.}
@@ -20,15 +22,21 @@ Meeseeks.NB(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10,
 
 \item{plot.out}{Whether to print the ROC curve (default is TRUE).}
 
+\item{plot.type}{Type of plot output. "ROC" for receiver operator characteristic (default) or "PR" for precision-recall.}
+
 \item{nCPU}{The number of cores to use (default is the maximum amount available minus 2)}
 
 \item{plotcol}{(optional) colour to use for the plot}
+
+\item{plottitle.extra}{Optional extra character string to be added to every plot title.}
+
+\item{Nplotpoints}{The amount of points used to construct the plot.}
 }
 \value{
 A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with the ROC plot data and 2) a matrix with the variable importance for each cross validated simulation (nFolds * nSims times).
 }
 \description{
-This function quickly performs a cross-validated Naives Bayes classification on a data matrix.
+This function quickly performs a cross-validated naive Bayes classification on a data matrix.
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

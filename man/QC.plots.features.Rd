@@ -4,24 +4,24 @@
 \alias{QC.plots.features}
 \title{QC plots for feature data}
 \usage{
-QC.plots.features(FeatureMatrix, XCMSobject, className = NULL,
-  NA.numeric.limit = NULL, plottitle = NULL, BOI.varname = NULL,
+QC.plots.features(FeatureMatrix, classVector, COI = NULL,
+  NA.numeric.limit = NULL, plottitle = NULL, BOI.vector = NULL,
   BOI = NULL)
 }
 \arguments{
 \item{FeatureMatrix}{the matrix of Features (obtained by using the xcms::groupval function). Matrix has to have columns for features and rows for samples.}
 
-\item{XCMSobject}{An xcmsSet object}
+\item{classVector}{The vector of sample classes.}
 
-\item{className}{In case there are multiple class definitions in the XCMSobject@phenoData object, the one of interest can be specified here. If not the code will ask.}
+\item{COI}{(optional) In case only a specific class is of interest.}
 
 \item{NA.numeric.limit}{If missing values are not indicated as NA but with a numeric value like 0, supply the numerical value under which values are considered missing.}
 
-\item{plottitle}{(Optional) Plot title}
+\item{plottitle}{(optional) Plot title}
 
-\item{BOI.varname}{(Optional) In case the RSD's need only be calculated for a specific subset of batches, provide the variable name that contains batch information here}
+\item{BOI.vector}{(optional) In case the RSD's need only be calculated for a specific subset of batches, provide the character/factor vector witch batches here (same length as the number of rows in FeatureMatrix).}
 
-\item{BOI}{(Optinal) The name of the batch of interest. BOI.varname has to be supplied as well}
+\item{BOI}{(optional) The name of the batch of interest. BOI.vector has to be supplied as well}
 }
 \value{
 several QC plots
