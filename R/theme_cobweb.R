@@ -15,7 +15,8 @@
 #' ggplot(AUC.df, aes(AUCs = AUCs,  colour = type)) +
 #'     geom_cobweb() + 
 #'     theme_cobweb() +
-#'     ggtitle("Test plot") 
+#'     ggtitle("Test plot") +
+#'     coord_equal()
 #'
 #' @name theme_cobweb
 #' 
