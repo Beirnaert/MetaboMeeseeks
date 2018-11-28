@@ -23,6 +23,7 @@ AUC.df = data.frame(type = c(rep("ROC",6),rep("Random",6)),
 ggplot(AUC.df, aes(AUCs = AUCs,  colour = type)) +
     geom_cobweb() + 
     theme_cobweb() +
-    ggtitle("Test plot") 
+    ggtitle("Test plot") +
+    coord_equal()
 
 }

@@ -7,7 +7,7 @@
 Meeseeks.NB(FeatureMatrix, GroupLabels, SampleLabels = NULL,
   nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC",
   nCPU = -1, plotcol = NULL, plottitle.extra = NULL,
-  Nplotpoints = 501)
+  Nplotpoints = 501, ...)
 }
 \arguments{
 \item{FeatureMatrix}{The matrix of Features (obtained by using the xcms::groupval function). Matrix has to have columns for features and rows for samples.}
@@ -31,6 +31,8 @@ Meeseeks.NB(FeatureMatrix, GroupLabels, SampleLabels = NULL,
 \item{plottitle.extra}{Optional extra character string to be added to every plot title.}
 
 \item{Nplotpoints}{The amount of points used to construct the plot.}
+
+\item{...}{Extra paremeters to be passed along to \code{\link[e1071]{naiveBayes}}}
 }
 \value{
 A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with the ROC plot data and 2) a matrix with the variable importance for each cross validated simulation (nFolds * nSims times).

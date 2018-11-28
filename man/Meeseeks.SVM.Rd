@@ -7,7 +7,8 @@
 Meeseeks.SVM(FeatureMatrix, GroupLabels, SampleLabels = NULL,
   nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC",
   nCPU = -1, plotcol = NULL, svm.kernel = "linear",
-  plottitle.extra = NULL, prediction_prob = TRUE, Nplotpoints = 501)
+  plottitle.extra = NULL, prediction_prob = TRUE, Nplotpoints = 501,
+  ...)
 }
 \arguments{
 \item{FeatureMatrix}{The matrix of Features (obtained by using the xcms::groupval function). Matrix has to have columns for features and rows for samples.}
@@ -35,6 +36,8 @@ Meeseeks.SVM(FeatureMatrix, GroupLabels, SampleLabels = NULL,
 \item{prediction_prob}{Whether to take the values for the TRUE prediction (default) or the FALSE prediction. Choosing FALSE inverts the ROC curve.}
 
 \item{Nplotpoints}{The amount of points used to construct the plot.}
+
+\item{...}{Extra paremeters to be passed along to \code{\link[e1071]{svm}}}
 }
 \value{
 A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with the ROC plot data and 2) a matrix with the variable importance for each cross validated simulation (nFolds * nSims times).
