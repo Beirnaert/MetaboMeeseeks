@@ -14,6 +14,7 @@
 #' @param plotcol (optional) colour to use for the plot
 #' @param plottitle.extra Optional extra character string to be added to every plot title.
 #' @param Nplotpoints The amount of points used to construct the plot.
+#' @param ... Extra paremeters to be passed along to \code{\link[randomForest]{randomForest}}
 #'  
 #' @return 
 #' A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with the ROC plot data and 2) a matrix with the variable importance for each cross validated simulation (nFolds * nSims times). 
@@ -35,12 +36,8 @@
 #' @import ggplot2
 #'  
 #' @export
-Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, plottitle.extra = NULL, Nplotpoints = 501){
-    
-    # FeatureMatrix = BreastCancer[,2:10]
-    # GroupLabels = BreastCancer$Class
-    # SampleLabels = BreastCancer$Id
-    
+Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, plottitle.extra = NULL, Nplotpoints = 501, ...){
+
     if(length(unique(GroupLabels)) != 2){
         stop("This function is only available in case of two groups in the data.")
     }
@@ -91,34 +88,25 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         Sys.sleep(1)
     }
     
-    
     Groups = unique(GroupLabels)
-    
     
     # initialize parallel computations
     cl <- parallel::makeCluster(nCPU)
     doSNOW::registerDoSNOW(cl)
     performanceList <- list()
     parCounter <- NULL
-    #pb <- txtProgressBar(max=nSamp, style=3)
-    #progress <- function(n) setTxtProgressBar(pb, n)
-    #opts <- list(progress=progress)
     
     # divide the number of runs for each core
     run.division <- split(seq(1,nSims), seq(1,nSims) %% nCPU)
     
     performanceList <- foreach::foreach(parCounter = 1:nCPU,  .inorder = FALSE, .packages = c("caret", "e1071","stats","randomForest","ROCR")) %dopar%
     {
-        
         results = list()
         for(iPar in 1:length(run.division[[parCounter]])){
             
             Group.fold <- caret::createFolds(GroupLabels, k = nFolds, returnTrain = FALSE)
             
-            
             # the model 
-            
-            
             predcv.list <- vector("list",nFolds)
             #predcv.votes.list = vector("list",nFolds)
             meeseeks.varImportance <- matrix(NA,ncol = ncol(FeatureMatrix), nrow = nFolds)
@@ -131,29 +119,23 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
                 trainData <- FeatureMatrix[-Group.fold[[i]],]
                 trainLabels <- GroupLabels[-Group.fold[[i]]]
                 
-                meeseeks.model <- randomForest::randomForest(x = trainData, y= trainLabels, ntree=500, importance = TRUE)
+                meeseeks.model <- randomForest::randomForest(x = trainData, y= trainLabels, importance = TRUE, ...)
                 
                 predlabel.probs <- stats::predict(object = meeseeks.model, newdata = validData, type="prob")
                 
-                #predlabel <- stats::predict(object = meeseeks.model, newdata = validData, type = "class")
                 predcv.list[[i]] <- as.data.frame(cbind(SampleLabels[Group.fold[[i]]], predlabel.probs[,2,drop=FALSE])) 
                 names(predcv.list[[i]])<-c("ID","decision.values")
-                #predcv.votes.list[[i]] <- as.data.frame(cbind(rownames(validData), as.character(predlabel)))
-                
+
                 meeseeks.varImportance[i,] = as.numeric(randomForest::importance(meeseeks.model, type = 1) )
                 
-                
             }
-            
-            
+        
             # evaluate 1 run performance
             
             predcv.df <- data.table::rbindlist(predcv.list)
             ord <-order(as.numeric(unlist(Group.fold)))
             predcv.df<-predcv.df[ord,]
-            
-            
-            
+          
             predcv.df$decision.values<- as.numeric(as.character(predcv.df$decision.values))
             
             rocpred <- ROCR::prediction(predictions = predcv.df$decision.values, labels=GroupLabels)
@@ -172,13 +154,7 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
             
             random_diag_line=data.frame(c(0,1),c(0,1))
             colnames(random_diag_line)=c("x","y")
-            
-            #perf.pr.xy=data.frame(perf.pr@x.values,perf.pr@y.values)
-            #colnames(perf.pr.xy)=c("precision","recall")
-            
-            #ggplot(perf.roc.xy, aes(x=minspecificity, y=sensitivity)) +geom_line(colour="red") +geom_line(data=random_diag_line, aes(x=x,y=y), colour="black")
-            #ggplot(perf.pr.xy, aes(x=precision, y=recall)) +geom_line(colour="red") 
-            
+
             aucvalue <- ROCR::performance(rocpred , measure="auc")
             
             perf.roc.xy$AUC = aucvalue@y.values[[1]]
@@ -229,7 +205,6 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
                 } else{
                     ROCdata_expanded$sensitivity[l] = ROCdata_expanded$sensitivity[l-1]
                 }
-                
             }
             
             perflistROC[[cter]] = ROCdata_expanded
@@ -257,8 +232,6 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
                     PRy = rep(NA,Nplotpoints),
                     lower = rep(NA,Nplotpoints),
                     upper = rep(NA,Nplotpoints))
-    
-    
     
     for( l in 1: nrow(RC)){
         if(l!=1){
@@ -304,8 +277,6 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
     random_diag_line=data.frame(c(0,1),c(0,1))
     colnames(random_diag_line)=c("x","y")
     
-    
-    
     ppROC <- ggplot() + 
         geom_line(data = RC, aes_string(x = 'ROCx', y = 'ROCy', colour = 'plotcol')) + 
         geom_ribbon(data = RC, aes_string(x = 'ROCx', ymin = 'lower', ymax = 'upper', fill = 'plotcol'), alpha=0.2) +
@@ -349,9 +320,7 @@ Meeseeks.RF = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         
     } 
     
-    
     Results = list( ROCdata = RC, varImportance = varImportance, ROCplot = ppROC, PRplor = ppPR)
     return(Results)
-    
 }
 

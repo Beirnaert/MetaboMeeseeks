@@ -16,6 +16,7 @@
 #' @param plottitle.extra Optional extra character string to be added to every plot title.
 #' @param prediction_prob Whether to take the values for the TRUE prediction (default) or the FALSE prediction. Choosing FALSE inverts the ROC curve.
 #' @param Nplotpoints The amount of points used to construct the plot.
+#' @param ... Extra paremeters to be passed along to \code{\link[e1071]{svm}}
 #'  
 #' @return 
 #' A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with the ROC plot data and 2) a matrix with the variable importance for each cross validated simulation (nFolds * nSims times). 
@@ -37,15 +38,8 @@
 #' @import ggplot2
 #'  
 #' @export
-Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, svm.kernel = "linear", plottitle.extra = NULL, prediction_prob = TRUE, Nplotpoints = 501){
-    
-    
-    
-    #FeatureMatrix = BreastCancer[,2:10]
-    
-    #GroupLabels = BreastCancer$Class
-    # SampleLabels = BreastCancer$Id
-    
+Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, svm.kernel = "linear", plottitle.extra = NULL, prediction_prob = TRUE, Nplotpoints = 501, ...){
+
     if(length(unique(GroupLabels)) != 2){
         stop("This function is only available in case of two groups in the data.")
     }
@@ -96,18 +90,13 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
         Sys.sleep(1)
     }
     
-    
     Groups = unique(GroupLabels)
-    
     
     # initialize parallel computations
     cl <- parallel::makeCluster(nCPU)
     doSNOW::registerDoSNOW(cl)
     performanceList <- list()
     parCounter <- NULL
-    #pb <- txtProgressBar(max=nSamp, style=3)
-    #progress <- function(n) setTxtProgressBar(pb, n)
-    #opts <- list(progress=progress)
     
     # divide the number of runs for each core
     run.division <- split(seq(1,nSims), seq(1,nSims) %% nCPU)
@@ -120,13 +109,9 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
             
             Group.fold <- caret::createFolds(GroupLabels, k = nFolds, returnTrain = FALSE)
             
-            
             # the model 
-            
-            
             predcv.list <- vector("list",nFolds)
-            #predcv.votes.list = vector("list",nFolds)
-            
+           
             for (i in 1:nFolds){
                 
                 validData <- FeatureMatrix[Group.fold[[i]],]
@@ -134,36 +119,26 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
                 trainData <- FeatureMatrix[-Group.fold[[i]],]
                 trainLabels <- GroupLabels[-Group.fold[[i]]]
                 
-                meeseeks.model <- e1071::svm(x = trainData, y= trainLabels, type = "C-classification", kernel = svm.kernel,probability = TRUE)
+                meeseeks.model <- e1071::svm(x = trainData, y= trainLabels, type = "C-classification", kernel = svm.kernel, probability = TRUE, ...)
                 
                 predlabel.probs <- stats::predict(object = meeseeks.model, newdata = validData, decision.values = TRUE, probability = TRUE)
                 
-                #predlabel <- stats::predict(object = meeseeks.model, newdata = validData, type = "class")
                 if(prediction_prob){
                     predcv.list[[i]] <- as.data.frame(cbind(SampleLabels[Group.fold[[i]]], attr(predlabel.probs, "probabilities")[,2,drop=FALSE])) 
                 }else{
                     predcv.list[[i]] <- as.data.frame(cbind(SampleLabels[Group.fold[[i]]], attr(predlabel.probs, "probabilities")[,1,drop=FALSE])) 
                 }
                 names(predcv.list[[i]])<-c("ID","decision.values")
-                #predcv.votes.list[[i]] <- as.data.frame(cbind(rownames(validData), as.character(predlabel)))
                 
                 train = trainData
                 train$Label = trainLabels 
-                #M <- rminer::fit(Label~., data=train, model="svm", task = "prob")
-                #svm.imp <- rminer::Importance(M, data=train)
-                
+
             }
-            
-            
-            
-            # evaluate 1 run performance
-            
+  
             predcv.df <- data.table::rbindlist(predcv.list)
             ord <-order(as.numeric(unlist(Group.fold)))
             predcv.df<-predcv.df[ord,]
-            
-            
-            
+     
             predcv.df$decision.values<- as.numeric(as.character(predcv.df$decision.values))
             
             rocpred <- ROCR::prediction(predictions = predcv.df$decision.values, labels=GroupLabels)
@@ -180,15 +155,8 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
                 perf.pr.xy$precision[1] = 1
             }
             
-            
             random_diag_line=data.frame(c(0,1),c(0,1))
             colnames(random_diag_line)=c("x","y")
-            
-            #perf.pr.xy=data.frame(perf.pr@x.values,perf.pr@y.values)
-            #colnames(perf.pr.xy)=c("precision","recall")
-            
-            #ggplot(perf.roc.xy, aes(x=minspecificity, y=sensitivity)) +geom_line(colour="red") +geom_line(data=random_diag_line, aes(x=x,y=y), colour="black")
-            #ggplot(perf.pr.xy, aes(x=precision, y=recall)) +geom_line(colour="red") 
             
             aucvalue <- ROCR::performance(rocpred , measure="auc")
             
@@ -196,9 +164,7 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
             
             ROC.and.importance = list(ROC = perf.roc.xy, PR = perf.pr.xy)
             
-            
             results[[iPar]] = ROC.and.importance
-            
         }    
         
         return(results)
@@ -206,7 +172,6 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
     #close(pb)
     parallel::stopCluster(cl)
     # output = list of lists
-    
     
     ##########################################################################################
     ##########################################################################################
@@ -311,8 +276,6 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
     random_diag_line=data.frame(c(0,1),c(0,1))
     colnames(random_diag_line)=c("x","y")
     
-    
-    
     ppROC <- ggplot() + 
         geom_line(data = RC, aes_string(x = 'ROCx', y = 'ROCy', colour = 'plotcol')) + 
         geom_ribbon(data = RC, aes_string(x = 'ROCx', ymin = 'lower', ymax = 'upper', fill = 'plotcol'), alpha=0.2) +
@@ -346,7 +309,6 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
         ppPR <- ppPR + ggtitle(paste("SVM PR, ",plottitle.extra,sep = ""))
     }
     
-    
     if(plot.out){
         if( plot.type != "PR"){
             print(ppROC)
@@ -356,8 +318,6 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
         
     } 
     
-    
     Results = list( ROCdata = RC, ROCplot = ppROC, PRplor = ppPR)
     return(Results)
-    
 }

@@ -14,6 +14,7 @@
 #' @param plotcol (optional) colour to use for the plot
 #' @param plottitle.extra Optional extra character string to be added to every plot title.
 #' @param Nplotpoints The amount of points used to construct the plot.
+#' @param ... Extra paremeters to be passed along to \code{\link[e1071]{naiveBayes}}
 #'  
 #' @return 
 #' A ROC plot (if plot.out = TRUE) and a list with 2 elements: 1) a data frame with the ROC plot data and 2) a matrix with the variable importance for each cross validated simulation (nFolds * nSims times). 
@@ -35,14 +36,7 @@
 #' @import ggplot2
 #'  
 #' @export
-Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, plottitle.extra = NULL, Nplotpoints = 501){
-    
-    
-    #FeatureMatrix = matrixNeg.remainder.filtered.scaled[classlabels.subset %in% c("ctrl","IC10"),]
-    #FeatureMatrix = BreastCancer[,2:10]
-    #GroupLabels = classlabels.subset[classlabels.subset %in% c("ctrl","IC10") ]
-    #GroupLabels = BreastCancer$Class
-    # SampleLabels = BreastCancer$Id
+Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds = 10, nSims = 20, plot.out = TRUE, plot.type = "ROC", nCPU = -1, plotcol = NULL, plottitle.extra = NULL, Nplotpoints = 501, ...){
     
     if(length(unique(GroupLabels)) != 2){
         stop("This function is only available in case of two groups in the data.")
@@ -98,18 +92,13 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
     
     performanceList <- foreach::foreach(parCounter = 1:nCPU,  .inorder = FALSE, .packages = c("caret", "e1071","stats","randomForest","ROCR")) %dopar% 
     {
-        
         results = list()
         for(iPar in 1:length(run.division[[parCounter]])){
             
             Group.fold <- caret::createFolds(GroupLabels, k = nFolds, returnTrain = FALSE)
-            
-            
+
             # the model 
-            
-         
             predcv.list <- vector("list",nFolds)
-            #predcv.votes.list = vector("list",nFolds)
             
             for (i in 1:nFolds){
                 
@@ -118,29 +107,19 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
                 trainData <- FeatureMatrix[-Group.fold[[i]],]
                 trainLabels <- GroupLabels[-Group.fold[[i]]]
                 
-                meeseeks.model <- e1071::naiveBayes(x = trainData, y= trainLabels)
-                #modelNB <- randomForest::randomForest(x = trainData, y= trainLabels, ntree=500)
+                meeseeks.model <- e1071::naiveBayes(x = trainData, y= trainLabels, ...)
                 
                 predlabel.probs <- stats::predict(object = meeseeks.model, newdata = validData, type="raw")
-                #predlabel.probs <- stats::predict(object = meeseeks.model, newdata = validData, type="prob")
-                #predlabel <- stats::predict(object = meeseeks.model, newdata = validData, type = "class")
                 predcv.list[[i]] <- as.data.frame(cbind(SampleLabels[Group.fold[[i]]], predlabel.probs[,2,drop=FALSE])) 
                 names(predcv.list[[i]])<-c("ID","decision.values")
-                #predcv.votes.list[[i]] <- as.data.frame(cbind(rownames(validData), as.character(predlabel)))
-                
-                
-                
+            
             }
-            
-            
             
             # evaluate 1 run performance
             
             predcv.df <- data.table::rbindlist(predcv.list)
             ord <-order(as.numeric(unlist(Group.fold)))
             predcv.df<-predcv.df[ord,]
-
-            
             
             predcv.df$decision.values<- as.numeric(as.character(predcv.df$decision.values))
             
@@ -162,12 +141,6 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
             random_diag_line=data.frame(c(0,1),c(0,1))
             colnames(random_diag_line)=c("x","y")
             
-            #perf.pr.xy=data.frame(perf.pr@x.values,perf.pr@y.values)
-            #colnames(perf.pr.xy)=c("precision","recall")
-            
-            #ggplot(perf.roc.xy, aes(x=minspecificity, y=sensitivity)) +geom_line(colour="red") +geom_line(data=random_diag_line, aes(x=x,y=y), colour="black")
-            #ggplot(perf.pr.xy, aes(x=precision, y=recall)) +geom_line(colour="red") 
-            
             aucvalue <- ROCR::performance(rocpred , measure="auc")
 
             perf.roc.xy$AUC = aucvalue@y.values[[1]]
@@ -183,7 +156,6 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
     #close(pb)
     parallel::stopCluster(cl)
     # output = list of lists
-    
 
     ##########################################################################################
     ##########################################################################################
@@ -333,8 +305,6 @@ Meeseeks.NB = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds =
         
     } 
     
-    
     Results = list( ROCdata = RC, ROCplot = ppROC, PRplor = ppPR)
     return(Results)
-    
 }
