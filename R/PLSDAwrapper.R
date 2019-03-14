@@ -7,7 +7,7 @@
 #' @param plotOutputs (logical) Whether to plot the PCA scores and loadings.
 #' 
 #'   
-#' @return varimportance.PLSDA The vector with variable importances
+#' @return varimportance_PLSDA The vector with variable importances
 #' 
 #'
 #' @author Charlie Beirnaert, \email{charlie.beirnaert@@uantwerpen.be}
@@ -26,11 +26,11 @@ PLSDAwrapper <- function(plsdaMatrix, classLabels, plotMarks = NULL, plotOutputs
     #classLabels = classlabels[[part]][ classlabels[[part]] %in% unlist(subclasses)]
     
     if(is.null(plotMarks)){
-        plotMarks = classLabels
+        plotMarks <- classLabels
     }
     
-    colnames(plsdaMatrix) = paste("feat",as.character(seq(1,ncol(plsdaMatrix))), sep = "" )
-    colnames(plsdaMatrix) = as.character(seq(1,ncol(plsdaMatrix)))
+    colnames(plsdaMatrix) <- paste("feat",as.character(seq(1,ncol(plsdaMatrix))), sep = "" )
+    colnames(plsdaMatrix) <- as.character(seq(1,ncol(plsdaMatrix)))
     
     #CAM.plsda.perf <- mixOmics::plsda(plsdaMatrix, as.factor(classLabels), ncomp = 4)
     #perf.plsda <- mixOmics::perf(CAM.plsda.perf, validation = 'Mfold', folds = 5,
@@ -38,18 +38,18 @@ PLSDAwrapper <- function(plsdaMatrix, classLabels, plotMarks = NULL, plotOutputs
     
     #plot(perf.plsda, overlay = 'measure', sd=TRUE)
     
-    CAM.plsda <- mixOmics::plsda(plsdaMatrix, as.factor(classLabels), ncomp = 4)
+    CAM_plsda <- mixOmics::plsda(plsdaMatrix, as.factor(classLabels), ncomp = 4)
     
     if(plotOutputs){
-    mixOmics::plotIndiv(CAM.plsda , comp = c(1,2),
+    mixOmics::plotIndiv(CAM_plsda , comp = c(1,2),
                         group = as.factor(classLabels), ind.names = plotMarks, 
                         ellipse = TRUE, legend = TRUE, title = ' PLSDA comp 1 - 2')
     
-    mixOmics::plotLoadings(CAM.plsda, contrib = "max", comp = 1)
+    mixOmics::plotLoadings(CAM_plsda, contrib = "max", comp = 1)
     }
     
-    varimportance.PLSDA = abs(CAM.plsda$loadings$X[,1])
+    varimportance_PLSDA <- abs(CAM_plsda$loadings$X[,1])
   
-    return(varimportance.PLSDA)
+    return(varimportance_PLSDA)
     
 }

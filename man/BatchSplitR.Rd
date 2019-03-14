@@ -2,7 +2,7 @@
 % Please edit documentation in R/BatchSplitR.R
 \name{BatchSplitR}
 \alias{BatchSplitR}
-\title{Function to split up xcms object by catch to perform a within batch analysis and merge the results at the end.}
+\title{Function to split up xcms object by batch to perform a within batch analysis and merge the results at the end.}
 \usage{
 BatchSplitR(xcmsObject, BatchClassLabel = NULL, BatchNames = NULL)
 }
@@ -17,7 +17,7 @@ BatchSplitR(xcmsObject, BatchClassLabel = NULL, BatchNames = NULL)
 xcmsObject.split A list with in each list entry an xcms object of a single batch.
 }
 \description{
-Function to split up xcms object by catch to perform a within batch analysis and merge the results at the end.
+Function to split up xcms object by batch to perform a within batch analysis and merge the results at the end.
 }
 \author{
 Charlie Beirnaert, \email{charlie.beirnaert@uantwerpen.be}

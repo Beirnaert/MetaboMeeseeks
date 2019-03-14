@@ -1,4 +1,4 @@
-#' Function to split up xcms object by catch to perform a within batch analysis and merge the results at the end.
+#' Function to split up xcms object by batch to perform a within batch analysis and merge the results at the end.
 #'
 #'
 #' @param xcmsObject XCMS object after multi-batch retention time correction and grouping.
@@ -27,40 +27,40 @@ BatchSplitR <- function(xcmsObject, BatchClassLabel = NULL, BatchNames = NULL ){
     }
     
     if(is.null(BatchNames)){
-        BatchNames = as.character(unique(xcmsObject@phenoData[BatchClassLabel])[,1])
+        BatchNames <- as.character(unique(xcmsObject@phenoData[BatchClassLabel])[,1])
     } else if(!all(BatchNames %in% as.character(unique(xcmsObject@phenoData[BatchClassLabel])[,1]))) {
         stop(paste("The supplied BatchNames could not all be matched to items in xcmsObject@phenoData which consists of:", paste(as.character(unique(xcmsObject@phenoData[BatchClassLabel])[,1]), collapse=" and ")))
     }
     
-    xcmsObject.split = list()
+    xcmsObject_split <- list()
     #mutual.RT.correction = list()
     for(k in 1:length(BatchNames)){
-        split.samples = which(xcmsObject@phenoData[BatchClassLabel] == BatchNames[k])
+        split_samples <- which(xcmsObject@phenoData[BatchClassLabel] == BatchNames[k])
         
-        splitObject = xcmsObject
-        sampleColumn = which(colnames(xcmsObject@peaks) == "sample")
-        splitObject@peaks = splitObject@peaks[as.data.frame(xcmsObject@peaks)$sample %in% split.samples, ]
-        splitObject@peaks[,sampleColumn] = splitObject@peaks[,sampleColumn] - split.samples[1] + 1
-        splitObject@groups = matrix(NA,ncol=0,nrow=0)
-        splitObject@groupidx = list()
-        phenoDat = xcmsObject@phenoData[split.samples,]
+        splitObject <- xcmsObject
+        sampleColumn <- which(colnames(xcmsObject@peaks) == "sample")
+        splitObject@peaks <- splitObject@peaks[as.data.frame(xcmsObject@peaks)$sample %in% split_samples, ]
+        splitObject@peaks[,sampleColumn] <- splitObject@peaks[,sampleColumn] - split_samples[1] + 1
+        splitObject@groups <- matrix(NA,ncol=0,nrow=0)
+        splitObject@groupidx <- list()
+        phenoDat <- xcmsObject@phenoData[split_samples,]
         for(j in 1:ncol(phenoDat)){
-            phenoDat[,j] = as.factor(as.character(phenoDat[,j]))
+            phenoDat[,j] <- as.factor(as.character(phenoDat[,j]))
         }
-        splitObject@phenoData = phenoDat
-        splitObject@rt$raw = xcmsObject@rt$corrected[split.samples]
-        splitObject@rt$corrected = xcmsObject@rt$corrected[split.samples]
-        splitObject@rt$Original_raw = xcmsObject@rt$raw[split.samples]
-        splitObject@filepaths = xcmsObject@filepaths[split.samples]
+        splitObject@phenoData <- phenoDat
+        splitObject@rt$raw <- xcmsObject@rt$corrected[split_samples]
+        splitObject@rt$corrected <- xcmsObject@rt$corrected[split_samples]
+        splitObject@rt$Original_raw <- xcmsObject@rt$raw[split_samples]
+        splitObject@filepaths <- xcmsObject@filepaths[split_samples]
         
-        xcmsObject.split[[k]] = splitObject
+        xcmsObject_split[[k]] <- splitObject
         #mutual.RT.correction[[k]] = list(raw = xcmsObject@rt$raw[split.samples], corrected = xcmsObject@rt$corrected[split.samples])
     }
     
-    names(xcmsObject.split) = paste("xcms_",BatchNames,sep ="")
+    names(xcmsObject_split) <- paste("xcms_",BatchNames,sep ="")
     #names(mutual.RT.correction) = paste("xcms_",BatchNames,sep ="")
     
-    return(xcmsObject.split)
+    return(xcmsObject_split)
     
 }
 

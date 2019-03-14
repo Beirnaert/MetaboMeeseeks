@@ -186,9 +186,41 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
     AUCs = rep(NA, nSims)
     
     cter = 1
-    for(main.loop in 1:length(performanceList)){
-        for(small.loop in 1:length(performanceList[[main.loop]])){
-            ROCdata = performanceList[[main.loop]][[small.loop]]$ROC[,1:2]
+    if(purrr::vec_depth(performanceList) == 5){
+        for(main.loop in 1:length(performanceList)){
+            for(small.loop in 1:length(performanceList[[main.loop]])){
+                ROCdata = performanceList[[main.loop]][[small.loop]]$ROC[,1:2]
+                ROCdata_expanded = data.frame(minspecificity = seq(0, 1, length.out = Nplotpoints),
+                                              sensitivity = rep(NA,Nplotpoints),
+                                              sim = cter)
+                
+                for( l in 1: nrow(ROCdata_expanded)){
+                    if(l!=1){
+                        ROCdata.expanded = ROCdata[ROCdata$minspecificity > ROCdata_expanded$minspecificity[l-1] & ROCdata$minspecificity <= ROCdata_expanded$minspecificity[l], ]   
+                    }else{
+                        ROCdata.expanded = ROCdata[ ROCdata$minspecificity <= ROCdata_expanded$minspecificity[l], ]
+                    }
+                    if(nrow(ROCdata.expanded) != 0){
+                        ROCdata_expanded$sensitivity[l] = mean(ROCdata.expanded$sensitivity)
+                    } else{
+                        ROCdata_expanded$sensitivity[l] = max(ROCdata$sensitivity[ ROCdata$minspecificity <= ROCdata_expanded$minspecificity[l]])
+                    }
+                }
+                
+                perflistROC[[cter]] = ROCdata_expanded
+                
+                PRdata = performanceList[[main.loop]][[small.loop]]$PR[,1:2] # is this true charlie? 4,5? 
+                PRdata$sim = cter
+                perflistPR[[cter]] = PRdata
+                
+                AUCs[cter] = performanceList[[main.loop]][[small.loop]]$ROC[1,3]
+                cter = cter + 1
+            }
+        }
+    } else if(purrr::vec_depth(performanceList) == 4){
+        for(main.loop in 1:length(performanceList)){
+            
+            ROCdata = performanceList[[main.loop]]$ROC[,1:2]
             ROCdata_expanded = data.frame(minspecificity = seq(0, 1, length.out = Nplotpoints),
                                           sensitivity = rep(NA,Nplotpoints),
                                           sim = cter)
@@ -202,20 +234,22 @@ Meeseeks.SVM = function(FeatureMatrix, GroupLabels, SampleLabels = NULL, nFolds 
                 if(nrow(ROCdata.expanded) != 0){
                     ROCdata_expanded$sensitivity[l] = mean(ROCdata.expanded$sensitivity)
                 } else{
-                    ROCdata_expanded$sensitivity[l] = ROCdata_expanded$sensitivity[l-1]
+                    ROCdata_expanded$sensitivity[l] =  max(ROCdata$sensitivity[ ROCdata$minspecificity <= ROCdata_expanded$minspecificity[l]])
                 }
-                
             }
             
             perflistROC[[cter]] = ROCdata_expanded
             
-            PRdata = performanceList[[main.loop]][[small.loop]]$PR[,1:2] # is this true charlie? 4,5? 
+            PRdata = performanceList[[main.loop]]$PR[,1:2] # is this true charlie? 4,5? 
             PRdata$sim = cter
             perflistPR[[cter]] = PRdata
             
-            AUCs[cter] = performanceList[[main.loop]][[small.loop]]$ROC[1,3]
+            AUCs[cter] = performanceList[[main.loop]]$ROC[1,3]
             cter = cter + 1
+            
         }
+    }else{
+        stop("Parallel loop indexing failed.")
     }
     
     PerformanceROC = data.table::rbindlist(perflistROC)

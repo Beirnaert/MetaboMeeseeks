@@ -19,7 +19,7 @@ unStructureBatches = function(xcmsSets.Post.batchSplit, BatchProcessingStructure
     unStructuredBatchList = vector("list", length = nBatches )
     
     cter = 1
-    for(k in 1:nMulitBatches){
+    for(k in seq_along(nMulitBatches)){
         for(j in 1:BatchProcessingStructure$nBatches[k]){
             unStructuredBatchList[[cter]] = xcmsSets.Post.batchSplit[[k]][[j]]
             cter = cter + 1

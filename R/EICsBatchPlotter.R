@@ -49,10 +49,10 @@ EICsBatchPlotter <- function(XCMSobject, groups = NULL, sample_names = NULL, sam
     
     if(!plot_samples){
         if(!is.null(phenotype_classname) & !phenotype_classname %in% names(XCMSobject@phenoData)){
-            phenotype_classname = names(XCMSobject@phenoData)[1]
+            phenotype_classname <- names(XCMSobject@phenoData)[1]
             warning(paste("The 'phenotype_classname' variable is not in the phenoData of the XCMSobject. The variable '", phenotype_classname,"' is chosen", sep = ""))
         }else if(is.null(phenotype_classname)){
-            phenotype_classname = names(XCMSobject@phenoData)[1]
+            phenotype_classname <- names(XCMSobject@phenoData)[1]
             message(paste("The 'phenotype_classname' variable is chosen to be ",phenotype_classname, sep = ""))
         }
     }
@@ -107,7 +107,7 @@ EICsBatchPlotter <- function(XCMSobject, groups = NULL, sample_names = NULL, sam
                 xlab("RT (s)") +
                 ylab("raw intensities")
         }else{
-            EIC_df$sample = as.factor(EIC_df$sample)
+            EIC_df$sample <- as.factor(EIC_df$sample)
             gg <- ggplot(EIC_df, aes_string(x = "rt", y = "intensity", color = "sample", group = "sample")) + 
                 geom_line() +
                 ggtitle(paste("m/z",round(XCMSobject@groups[groups[k],"mzmed"],4),

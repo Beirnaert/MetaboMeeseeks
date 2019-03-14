@@ -17,7 +17,7 @@ PLSDAwrapper(plsdaMatrix, classLabels, plotMarks = NULL,
 \item{plotOutputs}{(logical) Whether to plot the PCA scores and loadings.}
 }
 \value{
-varimportance.PLSDA The vector with variable importances
+varimportance_PLSDA The vector with variable importances
 }
 \description{
 Function to split up xcms object by catch to perform a within batch analysis and merge the results at the end
